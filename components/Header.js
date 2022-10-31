@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Image from "next/image"
 import { AiOutlineDown } from 'react-icons/ai'
 import Shiden from '../assets/Shiden.png'
 import { ConnectContext } from '../context/ConnectProvider'
-import { Identicon } from '@polkadot/react-identicon'
+//import { Identicon } from '@polkadot/react-identicon'
 
 const style = {
 	title: 'text-4xl text-white-700 text-center font-semibold',
@@ -32,14 +32,17 @@ function Header() {
 				</div>
 				{currentAccount ? (
 					<div className={`${style.button} ${style.buttonPadding}`}>
+						{/**
 						<div className={style.buttonIconContainer}>
 							<Identicon
 								value={currentAccount.address}
 								size={20}
 								theme={'polkadot'}
 							/>
+							 
 						</div>
-						<div className={style.buttonTextContainer}>{currentAccount.meta.name}</div>
+						*/}
+						<div className={style.buttonTextContainer}>{currentAccount.address}</div>
 					</div>
 				) : (
 					<div
