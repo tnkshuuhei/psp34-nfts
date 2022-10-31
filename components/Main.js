@@ -2,9 +2,7 @@ import Image from 'next/image'
 import { RiSettings3Fill } from 'react-icons/ri'
 import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai'
 import { IoSwapVertical } from 'react-icons/io5'
-import astar from '../assets/astar.png'
 import shiden from '../assets/Shiden.png'
-import usdt from '../assets/usdt.svg'
 import { useState } from 'react'
 import Button from './Button'
 const style = {
@@ -43,9 +41,6 @@ const Main = () => {
 					<div className={style.currencySelector}>
 						<button className={style.currencySelectorContent} onClick={() => setShowList
 							((prevState) => !prevState)}>
-							<div className={style.currencySelectorIcon}>
-								<Image src={shiden} alt='shiden' height={20} width={20} />
-							</div>
 							<div className={style.currencySelectorTicker}>SDN</div>
 							{showList ? (
 								<AiOutlineUp className={style.currencySelectorArrow} />
@@ -88,9 +83,6 @@ const Main = () => {
 					/>
 					<div className={style.currencySelector}>
 						<button className={style.currencySelectorContent}>
-							<div className={style.currencySelectorIcon}>
-								<Image src={usdt} alt='USDT' height={20} width={20} />
-							</div>
 							<div className={style.currencySelectorTicker}>USDT</div>
 							{showList ? (
 								<AiOutlineUp className={style.currencySelectorArrow} />

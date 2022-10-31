@@ -6,7 +6,6 @@ import { ConnectContext } from '../context/ConnectProvider'
 import { Identicon } from '@polkadot/react-identicon'
 
 const style = {
-	wrapper: `h-screen max-h-screen h-min-screen w-screen bg-zinc-800 text-white select-none flex flex-col justify-between`,
 	title: 'text-4xl text-white-700 text-center font-semibold',
 	headwrapper: `p-4 w-screen flex justify-between items-center`,
 	headerLogo: `flex w-1/4 items-center justify-start`,
@@ -18,41 +17,40 @@ const style = {
 function Header() {
 	const { connectWallet, currentAccount, api } = useContext(ConnectContext)
 	return (
-		<div className={style.wrapper}>
-			<div className={style.headwrapper}>
-				<div className={style.title}>Mint Shiden NFTs</div>
-				<div className={style.buttonsContainer}>
+
+		<div className={style.headwrapper}>
+			<div className={style.title}>Mint Shiden NFTs</div>
+			<div className={style.buttonsContainer}>
+				<div className={`${style.button} ${style.buttonPadding}`}>
+					<div className={style.buttonIconContainer}>
+						<Image src={Shiden} alt='shiden' height={20} width={20} />
+					</div>
+					<p>Shiden</p>
+					<div className={style.buttonIconContainer}>
+						<AiOutlineDown />
+					</div>
+				</div>
+				{currentAccount ? (
 					<div className={`${style.button} ${style.buttonPadding}`}>
 						<div className={style.buttonIconContainer}>
-							<Image src={Shiden} alt='shiden' height={20} width={20} />
+							<Identicon
+								value={currentAccount.address}
+								size={20}
+								theme={'polkadot'}
+							/>
 						</div>
-						<p>Shiden</p>
-						<div className={style.buttonIconContainer}>
-							<AiOutlineDown />
+						<div className={style.buttonTextContainer}>{currentAccount.meta.name}</div>
+					</div>
+				) : (
+					<div
+						onClick={() => connectWallet()}
+						className={`${style.button} ${style.buttonPadding}`}
+					>
+						<div className={`${style.buttonAccent} ${style.buttonPadding}`}>
+							Connect Wallet
 						</div>
 					</div>
-					{currentAccount ? (
-						<div className={`${style.button} ${style.buttonPadding}`}>
-							<div className={style.buttonIconContainer}>
-								<Identicon
-									value={currentAccount.address}
-									size={20}
-									theme={'polkadot'}
-								/>
-							</div>
-							<div className={style.buttonTextContainer}>{currentAccount.meta.name}</div>
-						</div>
-					) : (
-						<div
-							onClick={() => connectWallet()}
-							className={`${style.button} ${style.buttonPadding}`}
-						>
-							<div className={`${style.buttonAccent} ${style.buttonPadding}`}>
-								Connect Wallet
-							</div>
-						</div>
-					)}
-				</div>
+				)}
 			</div>
 		</div>
 	)
