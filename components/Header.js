@@ -3,11 +3,11 @@ import Image from "next/image"
 import { AiOutlineDown } from 'react-icons/ai'
 import Shiden from '../assets/Shiden.png'
 import { ConnectContext } from '../context/ConnectProvider'
-//import { Identicon } from '@polkadot/react-identicon'
+import { Identicon } from '@polkadot/react-identicon'
 
 const style = {
-	wrapper: `h-screen max-h-screen h-min-screen w-screen bg-[#2D242F] text-white select-none flex flex-col justify-between`,
-	title: 'text-4xl text-green-700 text-center font-semibold',
+	wrapper: `h-screen max-h-screen h-min-screen w-screen bg-zinc-800 text-white select-none flex flex-col justify-between`,
+	title: 'text-4xl text-white-700 text-center font-semibold',
 	headwrapper: `p-4 w-screen flex justify-between items-center`,
 	headerLogo: `flex w-1/4 items-center justify-start`,
 	buttonsContainer: `flex w-1/4 justify-end items-center`,
@@ -34,13 +34,11 @@ function Header() {
 					{currentAccount ? (
 						<div className={`${style.button} ${style.buttonPadding}`}>
 							<div className={style.buttonIconContainer}>
-								{/**
 								<Identicon
 									value={currentAccount.address}
 									size={20}
 									theme={'polkadot'}
 								/>
-								 */}
 							</div>
 							<div className={style.buttonTextContainer}>{currentAccount.meta.name}</div>
 						</div>
