@@ -1,7 +1,7 @@
 import Image from 'next/image'
 //import Button from '../component/Button'
-import Header from '../component/Header'
-//import styles from '../styles/Home.module.css'
+import Header from '../components/Header'
+import styles from '../styles/Home.module.css'
 import { ConnectContext } from '../context/ConnectProvider'
 import { useContext } from 'react'
 

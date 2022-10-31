@@ -6,7 +6,7 @@ import astar from '../assets/astar.png'
 import shiden from '../assets/Shiden.png'
 import usdt from '../assets/usdt.svg'
 import { useState } from 'react'
-import Button from '../components/Button'
+import Button from './Button'
 const style = {
 	wrapper: `w-screen flex items-center justify-center mt-14`,
 	content: `bg-[#191B1F] w-[40rem] rounded-2xl p-4`,
