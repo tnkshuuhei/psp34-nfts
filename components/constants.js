@@ -1,23 +1,51 @@
-export const CONTRACT_ADDRESS = "ZfgYGKL8JwvwXaj6sGymFtBiToZdVrTbXbZKWsAkThkVUe7";
+export const CONTRACT_ADDRESS = "XwVaAmDCrhMnzEdujSTwipbc74QRZP9fA9rCoUT1SSFU8Gv";
 // Replace the below abi with the abi of the contract you deployed
 export const ABI = {
 	"source": {
-		"hash": "0x638f0c5ee2e18f49edc8fc515d7f7a1f9516c2102d048f062f4834c0c47e3d90",
-		"language": "ink! 3.3.1",
+		"hash": "0x62d27d78679f9a35f9c84f83df5f520a0f514fa2613a87e31046880aef3243e2",
+		"language": "ink! 3.3.0",
 		"compiler": "rustc 1.65.0-nightly"
 	},
 	"contract": {
-		"name": "my_psp34",
-		"version": "1.0.0",
+		"name": "psp34_contract",
+		"version": "0.1.0",
 		"authors": [
-			"The best developer ever"
+			"[your_name] <[your_email]>"
 		]
 	},
 	"V3": {
 		"spec": {
 			"constructors": [
 				{
-					"args": [],
+					"args": [
+						{
+							"label": "id",
+							"type": {
+								"displayName": [
+									"Id"
+								],
+								"type": 1
+							}
+						},
+						{
+							"label": "name",
+							"type": {
+								"displayName": [
+									"String"
+								],
+								"type": 23
+							}
+						},
+						{
+							"label": "symbol",
+							"type": {
+								"displayName": [
+									"String"
+								],
+								"type": 23
+							}
+						}
+					],
 					"docs": [],
 					"label": "new",
 					"payable": false,
@@ -29,29 +57,87 @@ export const ABI = {
 			"messages": [
 				{
 					"args": [],
-					"docs": [
-						" Returns current NFT total supply."
-					],
-					"label": "PSP34::total_supply",
-					"mutates": false,
+					"docs": [],
+					"label": "mint_token",
+					"mutates": true,
 					"payable": false,
 					"returnType": {
 						"displayName": [
-							"psp34_external",
-							"TotalSupplyOutput"
+							"Result"
 						],
-						"type": 6
+						"type": 30
 					},
-					"selector": "0x628413fe"
+					"selector": "0x9144cba2"
 				},
 				{
 					"args": [
+						{
+							"label": "title",
+							"type": {
+								"displayName": [
+									"String"
+								],
+								"type": 23
+							}
+						},
+						{
+							"label": "author",
+							"type": {
+								"displayName": [
+									"String"
+								],
+								"type": 23
+							}
+						},
+						{
+							"label": "date",
+							"type": {
+								"displayName": [
+									"String"
+								],
+								"type": 23
+							}
+						},
+						{
+							"label": "cid",
+							"type": {
+								"displayName": [
+									"String"
+								],
+								"type": 23
+							}
+						}
+					],
+					"docs": [],
+					"label": "mint_with_attribute",
+					"mutates": true,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"Result"
+						],
+						"type": 30
+					},
+					"selector": "0x1fca19c1"
+				},
+				{
+					"args": [
+						{
+							"label": "owner",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"AllowanceInput1"
+								],
+								"type": 8
+							}
+						},
 						{
 							"label": "operator",
 							"type": {
 								"displayName": [
 									"psp34_external",
-									"ApproveInput1"
+									"AllowanceInput2"
 								],
 								"type": 8
 							}
@@ -61,45 +147,27 @@ export const ABI = {
 							"type": {
 								"displayName": [
 									"psp34_external",
-									"ApproveInput2"
+									"AllowanceInput3"
 								],
 								"type": 14
-							}
-						},
-						{
-							"label": "approved",
-							"type": {
-								"displayName": [
-									"psp34_external",
-									"ApproveInput3"
-								],
-								"type": 26
 							}
 						}
 					],
 					"docs": [
-						" Approves `operator` to withdraw the `id` token from the caller's account.",
-						" If `id` is `None` approves or disapproves the operator for all tokens of the caller.",
-						"",
-						" On success a `Approval` event is emitted.",
-						"",
-						" # Errors",
-						"",
-						" Returns `SelfApprove` error if it is self approve.",
-						"",
-						" Returns `NotApproved` error if caller is not owner of `id`."
+						" Returns `true` if the operator is approved by the owner to withdraw `id` token.",
+						" If `id` is `None`, returns `true` if the operator is approved to withdraw all owner's tokens."
 					],
-					"label": "PSP34::approve",
-					"mutates": true,
+					"label": "PSP34::allowance",
+					"mutates": false,
 					"payable": false,
 					"returnType": {
 						"displayName": [
 							"psp34_external",
-							"ApproveOutput"
+							"AllowanceOutput"
 						],
-						"type": 27
+						"type": 32
 					},
-					"selector": "0x1932a8b0"
+					"selector": "0x4790f55a"
 				},
 				{
 					"args": [
@@ -128,6 +196,36 @@ export const ABI = {
 						"type": 19
 					},
 					"selector": "0x1168624d"
+				},
+				{
+					"args": [
+						{
+							"label": "owner",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"BalanceOfInput1"
+								],
+								"type": 8
+							}
+						}
+					],
+					"docs": [
+						" Returns the balance of the owner.",
+						"",
+						" This represents the amount of unique tokens the owner has."
+					],
+					"label": "PSP34::balance_of",
+					"mutates": false,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"psp34_external",
+							"BalanceOfOutput"
+						],
+						"type": 4
+					},
+					"selector": "0xcde7e55f"
 				},
 				{
 					"args": [
@@ -183,39 +281,66 @@ export const ABI = {
 							"psp34_external",
 							"TransferOutput"
 						],
-						"type": 27
+						"type": 30
 					},
 					"selector": "0x3128d61b"
 				},
 				{
 					"args": [
 						{
-							"label": "owner",
+							"label": "operator",
 							"type": {
 								"displayName": [
 									"psp34_external",
-									"BalanceOfInput1"
+									"ApproveInput1"
 								],
 								"type": 8
+							}
+						},
+						{
+							"label": "id",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"ApproveInput2"
+								],
+								"type": 14
+							}
+						},
+						{
+							"label": "approved",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"ApproveInput3"
+								],
+								"type": 32
 							}
 						}
 					],
 					"docs": [
-						" Returns the balance of the owner.",
+						" Approves `operator` to withdraw the `id` token from the caller's account.",
+						" If `id` is `None` approves or disapproves the operator for all tokens of the caller.",
 						"",
-						" This represents the amount of unique tokens the owner has."
+						" On success a `Approval` event is emitted.",
+						"",
+						" # Errors",
+						"",
+						" Returns `SelfApprove` error if it is self approve.",
+						"",
+						" Returns `NotApproved` error if caller is not owner of `id`."
 					],
-					"label": "PSP34::balance_of",
-					"mutates": false,
+					"label": "PSP34::approve",
+					"mutates": true,
 					"payable": false,
 					"returnType": {
 						"displayName": [
 							"psp34_external",
-							"BalanceOfOutput"
+							"ApproveOutput"
 						],
-						"type": 4
+						"type": 30
 					},
-					"selector": "0xcde7e55f"
+					"selector": "0x1932a8b0"
 				},
 				{
 					"args": [],
@@ -237,274 +362,21 @@ export const ABI = {
 					"selector": "0xffa27a5f"
 				},
 				{
-					"args": [
-						{
-							"label": "owner",
-							"type": {
-								"displayName": [
-									"psp34_external",
-									"AllowanceInput1"
-								],
-								"type": 8
-							}
-						},
-						{
-							"label": "operator",
-							"type": {
-								"displayName": [
-									"psp34_external",
-									"AllowanceInput2"
-								],
-								"type": 8
-							}
-						},
-						{
-							"label": "id",
-							"type": {
-								"displayName": [
-									"psp34_external",
-									"AllowanceInput3"
-								],
-								"type": 14
-							}
-						}
-					],
+					"args": [],
 					"docs": [
-						" Returns `true` if the operator is approved by the owner to withdraw `id` token.",
-						" If `id` is `None`, returns `true` if the operator is approved to withdraw all owner's tokens."
+						" Returns current NFT total supply."
 					],
-					"label": "PSP34::allowance",
+					"label": "PSP34::total_supply",
 					"mutates": false,
 					"payable": false,
 					"returnType": {
 						"displayName": [
 							"psp34_external",
-							"AllowanceOutput"
+							"TotalSupplyOutput"
 						],
-						"type": 26
+						"type": 6
 					},
-					"selector": "0x4790f55a"
-				},
-				{
-					"args": [],
-					"docs": [
-						" Leaves the contract without owner. It will not be possible to call",
-						" owner's functions anymore. Can only be called by the current owner.",
-						"",
-						" NOTE: Renouncing ownership will leave the contract without an owner,",
-						" thereby removing any functionality that is only available to the owner.",
-						"",
-						" On success a `OwnershipTransferred` event is emitted.",
-						"",
-						" # Errors",
-						"",
-						" Panics with `CallerIsNotOwner` error if caller is not owner"
-					],
-					"label": "Ownable::renounce_ownership",
-					"mutates": true,
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"ownable_external",
-							"RenounceOwnershipOutput"
-						],
-						"type": 30
-					},
-					"selector": "0x5e228753"
-				},
-				{
-					"args": [],
-					"docs": [
-						" Returns the address of the current owner."
-					],
-					"label": "Ownable::owner",
-					"mutates": false,
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"ownable_external",
-							"OwnerOutput"
-						],
-						"type": 8
-					},
-					"selector": "0x4fa43c8c"
-				},
-				{
-					"args": [
-						{
-							"label": "new_owner",
-							"type": {
-								"displayName": [
-									"ownable_external",
-									"TransferOwnershipInput1"
-								],
-								"type": 8
-							}
-						}
-					],
-					"docs": [
-						" Transfers ownership of the contract to a `new_owner`.",
-						" Can only be called by the current owner.",
-						"",
-						" On success a `OwnershipTransferred` event is emitted.",
-						"",
-						" # Errors",
-						"",
-						" Panics with `CallerIsNotOwner` error if caller is not owner.",
-						"",
-						" Panics with `NewOwnerIsZero` error if new owner's address is zero."
-					],
-					"label": "Ownable::transfer_ownership",
-					"mutates": true,
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"ownable_external",
-							"TransferOwnershipOutput"
-						],
-						"type": 30
-					},
-					"selector": "0x11f43efd"
-				},
-				{
-					"args": [
-						{
-							"label": "account",
-							"type": {
-								"displayName": [
-									"psp34burnable_external",
-									"BurnInput1"
-								],
-								"type": 8
-							}
-						},
-						{
-							"label": "id",
-							"type": {
-								"displayName": [
-									"psp34burnable_external",
-									"BurnInput2"
-								],
-								"type": 1
-							}
-						}
-					],
-					"docs": [],
-					"label": "PSP34Burnable::burn",
-					"mutates": true,
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"psp34burnable_external",
-							"BurnOutput"
-						],
-						"type": 27
-					},
-					"selector": "0x63c9877a"
-				},
-				{
-					"args": [
-						{
-							"label": "account",
-							"type": {
-								"displayName": [
-									"psp34mintable_external",
-									"MintInput1"
-								],
-								"type": 8
-							}
-						},
-						{
-							"label": "id",
-							"type": {
-								"displayName": [
-									"psp34mintable_external",
-									"MintInput2"
-								],
-								"type": 1
-							}
-						}
-					],
-					"docs": [],
-					"label": "PSP34Mintable::mint",
-					"mutates": true,
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"psp34mintable_external",
-							"MintOutput"
-						],
-						"type": 27
-					},
-					"selector": "0x6c41f2ec"
-				},
-				{
-					"args": [
-						{
-							"label": "index",
-							"type": {
-								"displayName": [
-									"psp34enumerable_external",
-									"TokenByIndexInput1"
-								],
-								"type": 6
-							}
-						}
-					],
-					"docs": [
-						" Returns a token `Id` at a given `index` of all the tokens stored by the contract.",
-						" Use along with `total_supply` to enumerate all tokens."
-					],
-					"label": "PSP34Enumerable::token_by_index",
-					"mutates": false,
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"psp34enumerable_external",
-							"TokenByIndexOutput"
-						],
-						"type": 32
-					},
-					"selector": "0xcd0340d0"
-				},
-				{
-					"args": [
-						{
-							"label": "owner",
-							"type": {
-								"displayName": [
-									"psp34enumerable_external",
-									"OwnersTokenByIndexInput1"
-								],
-								"type": 8
-							}
-						},
-						{
-							"label": "index",
-							"type": {
-								"displayName": [
-									"psp34enumerable_external",
-									"OwnersTokenByIndexInput2"
-								],
-								"type": 6
-							}
-						}
-					],
-					"docs": [
-						" Returns a token `Id` owned by `owner` at a given `index` of its token list.",
-						" Use along with `balance_of` to enumerate all of ``owner``'s tokens."
-					],
-					"label": "PSP34Enumerable::owners_token_by_index",
-					"mutates": false,
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"psp34enumerable_external",
-							"OwnersTokenByIndexOutput"
-						],
-						"type": 32
-					},
-					"selector": "0x3bcfb511"
+					"selector": "0x628413fe"
 				},
 				{
 					"args": [
@@ -545,6 +417,115 @@ export const ABI = {
 						"type": 33
 					},
 					"selector": "0xf19d48d1"
+				},
+				{
+					"args": [
+						{
+							"label": "account",
+							"type": {
+								"displayName": [
+									"psp34burnable_external",
+									"BurnInput1"
+								],
+								"type": 8
+							}
+						},
+						{
+							"label": "id",
+							"type": {
+								"displayName": [
+									"psp34burnable_external",
+									"BurnInput2"
+								],
+								"type": 1
+							}
+						}
+					],
+					"docs": [
+						" Destroys token with id equal to `id` from `account`",
+						"",
+						" Caller must be approved to transfer tokens from `account`",
+						" or to transfer token with `id`"
+					],
+					"label": "PSP34Burnable::burn",
+					"mutates": true,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"psp34burnable_external",
+							"BurnOutput"
+						],
+						"type": 30
+					},
+					"selector": "0x63c9877a"
+				},
+				{
+					"args": [
+						{
+							"label": "owner",
+							"type": {
+								"displayName": [
+									"psp34enumerable_external",
+									"OwnersTokenByIndexInput1"
+								],
+								"type": 8
+							}
+						},
+						{
+							"label": "index",
+							"type": {
+								"displayName": [
+									"psp34enumerable_external",
+									"OwnersTokenByIndexInput2"
+								],
+								"type": 6
+							}
+						}
+					],
+					"docs": [
+						" Returns a token `Id` owned by `owner` at a given `index` of its token list.",
+						" Use along with `balance_of` to enumerate all of ``owner``'s tokens."
+					],
+					"label": "PSP34Enumerable::owners_token_by_index",
+					"mutates": false,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"psp34enumerable_external",
+							"OwnersTokenByIndexOutput"
+						],
+						"type": 34
+					},
+					"selector": "0x3bcfb511"
+				},
+				{
+					"args": [
+						{
+							"label": "index",
+							"type": {
+								"displayName": [
+									"psp34enumerable_external",
+									"TokenByIndexInput1"
+								],
+								"type": 6
+							}
+						}
+					],
+					"docs": [
+						" Returns a token `Id` at a given `index` of all the tokens stored by the contract.",
+						" Use along with `total_supply` to enumerate all tokens."
+					],
+					"label": "PSP34Enumerable::token_by_index",
+					"mutates": false,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"psp34enumerable_external",
+							"TokenByIndexOutput"
+						],
+						"type": 34
+					},
+					"selector": "0xcd0340d0"
 				}
 			]
 		},
@@ -558,7 +539,7 @@ export const ABI = {
 									{
 										"layout": {
 											"cell": {
-												"key": "0x0dbe693b00000000000000000000000000000000000000000000000000000000",
+												"key": "0xba1ad52bdf66c4b31efe8d66cea66b6f6365ce24823669066601b29c4e05a571",
 												"ty": 0
 											}
 										},
@@ -567,7 +548,7 @@ export const ABI = {
 									{
 										"layout": {
 											"cell": {
-												"key": "0x0ebe693b00000000000000000000000000000000000000000000000000000000",
+												"key": "0xbb1ad52bdf66c4b31efe8d66cea66b6f6365ce24823669066601b29c4e05a571",
 												"ty": 12
 											}
 										},
@@ -580,7 +561,7 @@ export const ABI = {
 													{
 														"layout": {
 															"cell": {
-																"key": "0x4cefab1200000000000000000000000000000000000000000000000000000000",
+																"key": "0xb6a71e4002c7879d26cf12fa4e7974c49d0726c7f0a89c808ab143546ccf0a4c",
 																"ty": 18
 															}
 														},
@@ -589,14 +570,14 @@ export const ABI = {
 													{
 														"layout": {
 															"enum": {
-																"dispatchKey": "0x4defab1200000000000000000000000000000000000000000000000000000000",
+																"dispatchKey": "0xb7a71e4002c7879d26cf12fa4e7974c49d0726c7f0a89c808ab143546ccf0a4c",
 																"variants": {
 																	"0": {
 																		"fields": [
 																			{
 																				"layout": {
 																					"cell": {
-																						"key": "0x4eefab1200000000000000000000000000000000000000000000000000000000",
+																						"key": "0xb8a71e4002c7879d26cf12fa4e7974c49d0726c7f0a89c808ab143546ccf0a4c",
 																						"ty": 15
 																					}
 																				},
@@ -620,14 +601,14 @@ export const ABI = {
 									{
 										"layout": {
 											"enum": {
-												"dispatchKey": "0x0fbe693b00000000000000000000000000000000000000000000000000000000",
+												"dispatchKey": "0xbc1ad52bdf66c4b31efe8d66cea66b6f6365ce24823669066601b29c4e05a571",
 												"variants": {
 													"0": {
 														"fields": [
 															{
 																"layout": {
 																	"cell": {
-																		"key": "0x10be693b00000000000000000000000000000000000000000000000000000000",
+																		"key": "0xbd1ad52bdf66c4b31efe8d66cea66b6f6365ce24823669066601b29c4e05a571",
 																		"ty": 15
 																	}
 																},
@@ -650,47 +631,21 @@ export const ABI = {
 					},
 					{
 						"layout": {
-							"struct": {
-								"fields": [
-									{
-										"layout": {
-											"cell": {
-												"key": "0xb36ee29c00000000000000000000000000000000000000000000000000000000",
-												"ty": 8
-											}
-										},
-										"name": "owner"
-									},
-									{
-										"layout": {
-											"enum": {
-												"dispatchKey": "0xb46ee29c00000000000000000000000000000000000000000000000000000000",
-												"variants": {
-													"0": {
-														"fields": [
-															{
-																"layout": {
-																	"cell": {
-																		"key": "0xb56ee29c00000000000000000000000000000000000000000000000000000000",
-																		"ty": 15
-																	}
-																},
-																"name": null
-															}
-														]
-													},
-													"1": {
-														"fields": []
-													}
-												}
-											}
-										},
-										"name": "_reserved"
-									}
-								]
+							"cell": {
+								"key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+								"ty": 2
 							}
 						},
-						"name": "ownable"
+						"name": "last_token_id"
+					},
+					{
+						"layout": {
+							"cell": {
+								"key": "0x0100000000000000000000000000000000000000000000000000000000000000",
+								"ty": 22
+							}
+						},
+						"name": "cid_list"
 					},
 					{
 						"layout": {
@@ -699,8 +654,8 @@ export const ABI = {
 									{
 										"layout": {
 											"cell": {
-												"key": "0xc4c906f100000000000000000000000000000000000000000000000000000000",
-												"ty": 22
+												"key": "0x67b8d3659b5eb4a0b97187fafa7fa9323b33c1b0d9f17dc78b89f4319216d42d",
+												"ty": 26
 											}
 										},
 										"name": "attributes"
@@ -708,14 +663,14 @@ export const ABI = {
 									{
 										"layout": {
 											"enum": {
-												"dispatchKey": "0xc5c906f100000000000000000000000000000000000000000000000000000000",
+												"dispatchKey": "0x68b8d3659b5eb4a0b97187fafa7fa9323b33c1b0d9f17dc78b89f4319216d42d",
 												"variants": {
 													"0": {
 														"fields": [
 															{
 																"layout": {
 																	"cell": {
-																		"key": "0xc6c906f100000000000000000000000000000000000000000000000000000000",
+																		"key": "0x69b8d3659b5eb4a0b97187fafa7fa9323b33c1b0d9f17dc78b89f4319216d42d",
 																		"ty": 15
 																	}
 																},
@@ -1144,7 +1099,9 @@ export const ABI = {
 						"composite": {
 							"fields": [
 								{
-									"type": 24
+									"name": "offset_key",
+									"type": 25,
+									"typeName": "Key"
 								}
 							]
 						}
@@ -1153,6 +1110,73 @@ export const ABI = {
 						{
 							"name": "K",
 							"type": 23
+						},
+						{
+							"name": "V",
+							"type": 24
+						}
+					],
+					"path": [
+						"ink_storage",
+						"lazy",
+						"mapping",
+						"Mapping"
+					]
+				}
+			},
+			{
+				"id": 23,
+				"type": {
+					"def": {
+						"primitive": "str"
+					}
+				}
+			},
+			{
+				"id": 24,
+				"type": {
+					"def": {
+						"sequence": {
+							"type": 23
+						}
+					}
+				}
+			},
+			{
+				"id": 25,
+				"type": {
+					"def": {
+						"composite": {
+							"fields": [
+								{
+									"type": 9,
+									"typeName": "[u8; 32]"
+								}
+							]
+						}
+					},
+					"path": [
+						"ink_primitives",
+						"Key"
+					]
+				}
+			},
+			{
+				"id": 26,
+				"type": {
+					"def": {
+						"composite": {
+							"fields": [
+								{
+									"type": 28
+								}
+							]
+						}
+					},
+					"params": [
+						{
+							"name": "K",
+							"type": 27
 						},
 						{
 							"name": "V",
@@ -1168,7 +1192,7 @@ export const ABI = {
 				}
 			},
 			{
-				"id": 23,
+				"id": 27,
 				"type": {
 					"def": {
 						"tuple": [
@@ -1179,135 +1203,23 @@ export const ABI = {
 				}
 			},
 			{
-				"id": 24,
-				"type": {
-					"def": {
-						"sequence": {
-							"type": 25
-						}
-					}
-				}
-			},
-			{
-				"id": 25,
-				"type": {
-					"def": {
-						"tuple": [
-							23,
-							7
-						]
-					}
-				}
-			},
-			{
-				"id": 26,
-				"type": {
-					"def": {
-						"primitive": "bool"
-					}
-				}
-			},
-			{
-				"id": 27,
-				"type": {
-					"def": {
-						"variant": {
-							"variants": [
-								{
-									"fields": [
-										{
-											"type": 15
-										}
-									],
-									"index": 0,
-									"name": "Ok"
-								},
-								{
-									"fields": [
-										{
-											"type": 28
-										}
-									],
-									"index": 1,
-									"name": "Err"
-								}
-							]
-						}
-					},
-					"params": [
-						{
-							"name": "T",
-							"type": 15
-						},
-						{
-							"name": "E",
-							"type": 28
-						}
-					],
-					"path": [
-						"Result"
-					]
-				}
-			},
-			{
 				"id": 28,
 				"type": {
 					"def": {
-						"variant": {
-							"variants": [
-								{
-									"fields": [
-										{
-											"type": 29,
-											"typeName": "String"
-										}
-									],
-									"index": 0,
-									"name": "Custom"
-								},
-								{
-									"index": 1,
-									"name": "SelfApprove"
-								},
-								{
-									"index": 2,
-									"name": "NotApproved"
-								},
-								{
-									"index": 3,
-									"name": "TokenExists"
-								},
-								{
-									"index": 4,
-									"name": "TokenNotExists"
-								},
-								{
-									"fields": [
-										{
-											"type": 29,
-											"typeName": "String"
-										}
-									],
-									"index": 5,
-									"name": "SafeTransferCheckFailed"
-								}
-							]
+						"sequence": {
+							"type": 29
 						}
-					},
-					"path": [
-						"openbrush_contracts",
-						"traits",
-						"errors",
-						"psp34",
-						"PSP34Error"
-					]
+					}
 				}
 			},
 			{
 				"id": 29,
 				"type": {
 					"def": {
-						"primitive": "str"
+						"tuple": [
+							27,
+							7
+						]
 					}
 				}
 			},
@@ -1360,12 +1272,40 @@ export const ABI = {
 						"variant": {
 							"variants": [
 								{
+									"fields": [
+										{
+											"type": 23,
+											"typeName": "String"
+										}
+									],
 									"index": 0,
-									"name": "CallerIsNotOwner"
+									"name": "Custom"
 								},
 								{
 									"index": 1,
-									"name": "NewOwnerIsZero"
+									"name": "SelfApprove"
+								},
+								{
+									"index": 2,
+									"name": "NotApproved"
+								},
+								{
+									"index": 3,
+									"name": "TokenExists"
+								},
+								{
+									"index": 4,
+									"name": "TokenNotExists"
+								},
+								{
+									"fields": [
+										{
+											"type": 23,
+											"typeName": "String"
+										}
+									],
+									"index": 5,
+									"name": "SafeTransferCheckFailed"
 								}
 							]
 						}
@@ -1374,8 +1314,8 @@ export const ABI = {
 						"openbrush_contracts",
 						"traits",
 						"errors",
-						"ownable",
-						"OwnableError"
+						"psp34",
+						"PSP34Error"
 					]
 				}
 			},
@@ -1383,42 +1323,8 @@ export const ABI = {
 				"id": 32,
 				"type": {
 					"def": {
-						"variant": {
-							"variants": [
-								{
-									"fields": [
-										{
-											"type": 1
-										}
-									],
-									"index": 0,
-									"name": "Ok"
-								},
-								{
-									"fields": [
-										{
-											"type": 28
-										}
-									],
-									"index": 1,
-									"name": "Err"
-								}
-							]
-						}
-					},
-					"params": [
-						{
-							"name": "T",
-							"type": 1
-						},
-						{
-							"name": "E",
-							"type": 28
-						}
-					],
-					"path": [
-						"Result"
-					]
+						"primitive": "bool"
+					}
 				}
 			},
 			{
@@ -1451,6 +1357,48 @@ export const ABI = {
 					],
 					"path": [
 						"Option"
+					]
+				}
+			},
+			{
+				"id": 34,
+				"type": {
+					"def": {
+						"variant": {
+							"variants": [
+								{
+									"fields": [
+										{
+											"type": 1
+										}
+									],
+									"index": 0,
+									"name": "Ok"
+								},
+								{
+									"fields": [
+										{
+											"type": 31
+										}
+									],
+									"index": 1,
+									"name": "Err"
+								}
+							]
+						}
+					},
+					"params": [
+						{
+							"name": "T",
+							"type": 1
+						},
+						{
+							"name": "E",
+							"type": 31
+						}
+					],
+					"path": [
+						"Result"
 					]
 				}
 			}
