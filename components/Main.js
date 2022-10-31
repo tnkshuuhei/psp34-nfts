@@ -4,7 +4,7 @@ import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
 import { ABI, CONTRACT_ADDRESS } from './constants'
 import { ContractPromise } from '@polkadot/api-contract'
-import { web3FromSource } from '@polkadot/extension-dapp'
+//import { web3FromSource } from '@polkadot/extension-dapp'
 
 const style = {
 	wrapper: `w-screen flex items-center justify-center mt-14`,
@@ -19,10 +19,13 @@ const Main = () => {
 	const [Name, setName] = useState();
 	const [Image, setImage] = useState();
 	const [Description, setDescription] = useState();
-	const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
+	const gasLimit = -1;
 
+	const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
+	console.log('psp34:', psp34);
 	const setupContract = async () => {
 		try {
+			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
 			const mintExtrinsic = await psp34.tx.mintToken({ gasLimit });
 			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {

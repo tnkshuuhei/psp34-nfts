@@ -9,18 +9,17 @@ if (typeof window !== 'undefined') {
 	pjs = window.injectedWeb3
 }
 const WS_PROVIDER = 'wss://shibuya.public.blastapi.io'
-const DAPP_NAME = 'mint psp34NFTs'
+const DAPP_NAME = 'Mint Shiden NFTs'
 export const ConnectProvider = ({ children }) => {
 	const [currentAccount, setCurrentAccount] = useState()
-
+	const [api, setapi] = useState()
 	useEffect(() => {
 		checkIfWalletIsConnected()
 	}, [])
-
 	const connectWallet = async () => {
 		try {
 			if (!pjs) return alert('Please install polkadot-js ')
-			const { web3Enable, web3Accounts, web3FromSource } = await import("@polkadot/extension-dapp");
+			const { web3Enable, web3Accounts } = await import("@polkadot/extension-dapp");
 			const extensions = await web3Enable(DAPP_NAME);
 			if (extensions.length === 0) {
 				// no extension installed, or the user did not accept the authorization
@@ -30,6 +29,7 @@ export const ConnectProvider = ({ children }) => {
 			const provider = new WsProvider(WS_PROVIDER);
 
 			const api = await ApiPromise.create({ provider });
+			setapi(api)
 			const allaccounts = await web3Accounts();
 			const account = allaccounts[0];
 			setCurrentAccount(account)
@@ -40,7 +40,7 @@ export const ConnectProvider = ({ children }) => {
 	}
 	const checkIfWalletIsConnected = async () => {
 		try {
-			const { web3Enable, web3Accounts, web3FromSource } = await import("@polkadot/extension-dapp");
+			const { web3Enable, web3Accounts } = await import("@polkadot/extension-dapp");
 			const extensions = await web3Enable(DAPP_NAME);
 			if (extensions.length === 0) {
 				return;
@@ -50,8 +50,8 @@ export const ConnectProvider = ({ children }) => {
 				setCurrentAccount(allaccounts[0])
 			}
 			const provider = new WsProvider(WS_PROVIDER);
-			// Create the API and wait until ready
 			const api = await ApiPromise.create({ provider });
+			setapi(api);
 			await api.isReady;
 			const account = allaccounts[0];
 			setCurrentAccount(account)
@@ -64,6 +64,7 @@ export const ConnectProvider = ({ children }) => {
 			value={{
 				currentAccount,
 				connectWallet,
+				api,
 			}}>
 			{children}
 		</ConnectContext.Provider>

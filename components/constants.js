@@ -1,40 +1,26 @@
-export const CONTRACT_ADDRESS = "5CUq8TpEVXKcgoB75fZQzjcFN7ZExyJGSZEEwYApUhRtGygK";
+export const CONTRACT_ADDRESS = "ZfgYGKL8JwvwXaj6sGymFtBiToZdVrTbXbZKWsAkThkVUe7";
 // Replace the below abi with the abi of the contract you deployed
 export const ABI = {
 	"source": {
-		"hash": "0x5d1618c769b7c6fbd47eaba1e43e2a8485c6c2c04461cbaa81991c2eeb24f827",
-		"language": "ink! 3.0.0-rc6",
-		"compiler": "rustc 1.58.0-nightly"
+		"hash": "0x638f0c5ee2e18f49edc8fc515d7f7a1f9516c2102d048f062f4834c0c47e3d90",
+		"language": "ink! 3.3.1",
+		"compiler": "rustc 1.65.0-nightly"
 	},
 	"contract": {
-		"name": "polkadot-amm",
-		"version": "0.1.0",
+		"name": "my_psp34",
+		"version": "1.0.0",
 		"authors": [
-			"Nimish Agrawal realnimish@gmail.com"
+			"The best developer ever"
 		]
 	},
-	"V1": {
+	"V3": {
 		"spec": {
 			"constructors": [
 				{
-					"args": [
-						{
-							"name": "_fees",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
-							}
-						}
-					],
-					"docs": [
-						"Constructs a new AMM instance",
-						"@param _fees: valid interval -> [0,1000)"
-					],
-					"name": [
-						"new"
-					],
+					"args": [],
+					"docs": [],
+					"label": "new",
+					"payable": false,
 					"selector": "0x9bae9d5e"
 				}
 			],
@@ -42,482 +28,523 @@ export const ABI = {
 			"events": [],
 			"messages": [
 				{
+					"args": [],
+					"docs": [
+						" Returns current NFT total supply."
+					],
+					"label": "PSP34::total_supply",
+					"mutates": false,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"psp34_external",
+							"TotalSupplyOutput"
+						],
+						"type": 6
+					},
+					"selector": "0x628413fe"
+				},
+				{
 					"args": [
 						{
-							"name": "_amountToken1",
+							"label": "operator",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34_external",
+									"ApproveInput1"
 								],
-								"type": 0
+								"type": 8
 							}
 						},
 						{
-							"name": "_amountToken2",
+							"label": "id",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34_external",
+									"ApproveInput2"
 								],
-								"type": 0
+								"type": 14
+							}
+						},
+						{
+							"label": "approved",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"ApproveInput3"
+								],
+								"type": 26
 							}
 						}
 					],
 					"docs": [
-						" Sends free token(s) to the invoker"
+						" Approves `operator` to withdraw the `id` token from the caller's account.",
+						" If `id` is `None` approves or disapproves the operator for all tokens of the caller.",
+						"",
+						" On success a `Approval` event is emitted.",
+						"",
+						" # Errors",
+						"",
+						" Returns `SelfApprove` error if it is self approve.",
+						"",
+						" Returns `NotApproved` error if caller is not owner of `id`."
 					],
+					"label": "PSP34::approve",
 					"mutates": true,
-					"name": [
-						"faucet"
-					],
 					"payable": false,
-					"returnType": null,
-					"selector": "0x91bd0a53"
+					"returnType": {
+						"displayName": [
+							"psp34_external",
+							"ApproveOutput"
+						],
+						"type": 27
+					},
+					"selector": "0x1932a8b0"
+				},
+				{
+					"args": [
+						{
+							"label": "id",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"OwnerOfInput1"
+								],
+								"type": 1
+							}
+						}
+					],
+					"docs": [
+						" Returns the owner of the token if any."
+					],
+					"label": "PSP34::owner_of",
+					"mutates": false,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"psp34_external",
+							"OwnerOfOutput"
+						],
+						"type": 19
+					},
+					"selector": "0x1168624d"
+				},
+				{
+					"args": [
+						{
+							"label": "to",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"TransferInput1"
+								],
+								"type": 8
+							}
+						},
+						{
+							"label": "id",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"TransferInput2"
+								],
+								"type": 1
+							}
+						},
+						{
+							"label": "data",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"TransferInput3"
+								],
+								"type": 7
+							}
+						}
+					],
+					"docs": [
+						" Transfer approved or owned token from caller.",
+						"",
+						" On success a `Transfer` event is emitted.",
+						"",
+						" # Errors",
+						"",
+						" Returns `TokenNotExists` error if `id` does not exist.",
+						"",
+						" Returns `NotApproved` error if `from` doesn't have allowance for transferring.",
+						"",
+						" Returns `SafeTransferCheckFailed` error if `to` doesn't accept transfer."
+					],
+					"label": "PSP34::transfer",
+					"mutates": true,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"psp34_external",
+							"TransferOutput"
+						],
+						"type": 27
+					},
+					"selector": "0x3128d61b"
+				},
+				{
+					"args": [
+						{
+							"label": "owner",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"BalanceOfInput1"
+								],
+								"type": 8
+							}
+						}
+					],
+					"docs": [
+						" Returns the balance of the owner.",
+						"",
+						" This represents the amount of unique tokens the owner has."
+					],
+					"label": "PSP34::balance_of",
+					"mutates": false,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"psp34_external",
+							"BalanceOfOutput"
+						],
+						"type": 4
+					},
+					"selector": "0xcde7e55f"
 				},
 				{
 					"args": [],
 					"docs": [
-						" Returns the balance of the user"
+						" Returns the collection `Id` of the NFT token.",
+						"",
+						" This can represents the relationship between tokens/contracts/pallets."
 					],
+					"label": "PSP34::collection_id",
 					"mutates": false,
-					"name": [
-						"getMyHoldings"
-					],
 					"payable": false,
 					"returnType": {
-						"displayName": [],
-						"type": 9
+						"displayName": [
+							"psp34_external",
+							"CollectionIdOutput"
+						],
+						"type": 1
 					},
-					"selector": "0x4646fd22"
+					"selector": "0xffa27a5f"
+				},
+				{
+					"args": [
+						{
+							"label": "owner",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"AllowanceInput1"
+								],
+								"type": 8
+							}
+						},
+						{
+							"label": "operator",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"AllowanceInput2"
+								],
+								"type": 8
+							}
+						},
+						{
+							"label": "id",
+							"type": {
+								"displayName": [
+									"psp34_external",
+									"AllowanceInput3"
+								],
+								"type": 14
+							}
+						}
+					],
+					"docs": [
+						" Returns `true` if the operator is approved by the owner to withdraw `id` token.",
+						" If `id` is `None`, returns `true` if the operator is approved to withdraw all owner's tokens."
+					],
+					"label": "PSP34::allowance",
+					"mutates": false,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"psp34_external",
+							"AllowanceOutput"
+						],
+						"type": 26
+					},
+					"selector": "0x4790f55a"
 				},
 				{
 					"args": [],
 					"docs": [
-						" Returns the amount of tokens locked in the pool,total shares issued & trading fee param"
+						" Leaves the contract without owner. It will not be possible to call",
+						" owner's functions anymore. Can only be called by the current owner.",
+						"",
+						" NOTE: Renouncing ownership will leave the contract without an owner,",
+						" thereby removing any functionality that is only available to the owner.",
+						"",
+						" On success a `OwnershipTransferred` event is emitted.",
+						"",
+						" # Errors",
+						"",
+						" Panics with `CallerIsNotOwner` error if caller is not owner"
 					],
-					"mutates": false,
-					"name": [
-						"getPoolDetails"
-					],
+					"label": "Ownable::renounce_ownership",
+					"mutates": true,
 					"payable": false,
 					"returnType": {
-						"displayName": [],
-						"type": 10
+						"displayName": [
+							"ownable_external",
+							"RenounceOwnershipOutput"
+						],
+						"type": 30
 					},
-					"selector": "0xc1d33772"
+					"selector": "0x5e228753"
+				},
+				{
+					"args": [],
+					"docs": [
+						" Returns the address of the current owner."
+					],
+					"label": "Ownable::owner",
+					"mutates": false,
+					"payable": false,
+					"returnType": {
+						"displayName": [
+							"ownable_external",
+							"OwnerOutput"
+						],
+						"type": 8
+					},
+					"selector": "0x4fa43c8c"
 				},
 				{
 					"args": [
 						{
-							"name": "_amountToken2",
+							"label": "new_owner",
 							"type": {
 								"displayName": [
-									"Balance"
+									"ownable_external",
+									"TransferOwnershipInput1"
 								],
-								"type": 0
+								"type": 8
 							}
 						}
 					],
 					"docs": [
-						" Returns amount of Token1 required when providing liquidity with _amountToken2 quantity of Token2"
+						" Transfers ownership of the contract to a `new_owner`.",
+						" Can only be called by the current owner.",
+						"",
+						" On success a `OwnershipTransferred` event is emitted.",
+						"",
+						" # Errors",
+						"",
+						" Panics with `CallerIsNotOwner` error if caller is not owner.",
+						"",
+						" Panics with `NewOwnerIsZero` error if new owner's address is zero."
 					],
-					"mutates": false,
-					"name": [
-						"getEquivalentToken1Estimate"
-					],
+					"label": "Ownable::transfer_ownership",
+					"mutates": true,
 					"payable": false,
 					"returnType": {
 						"displayName": [
-							"Result"
+							"ownable_external",
+							"TransferOwnershipOutput"
 						],
-						"type": 11
+						"type": 30
 					},
-					"selector": "0x3814b1f7"
+					"selector": "0x11f43efd"
 				},
 				{
 					"args": [
 						{
-							"name": "_amountToken1",
+							"label": "account",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34burnable_external",
+									"BurnInput1"
 								],
-								"type": 0
-							}
-						}
-					],
-					"docs": [
-						" Returns amount of Token2 required when providing liquidity with _amountToken1 quantity of Token1"
-					],
-					"mutates": false,
-					"name": [
-						"getEquivalentToken2Estimate"
-					],
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"Result"
-						],
-						"type": 11
-					},
-					"selector": "0x5a431238"
-				},
-				{
-					"args": [
-						{
-							"name": "_amountToken1",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
+								"type": 8
 							}
 						},
 						{
-							"name": "_amountToken2",
+							"label": "id",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34burnable_external",
+									"BurnInput2"
 								],
-								"type": 0
+								"type": 1
 							}
 						}
 					],
-					"docs": [
-						" Adding new liquidity in the pool",
-						" Returns the amount of share issued for locking given assets"
-					],
+					"docs": [],
+					"label": "PSP34Burnable::burn",
 					"mutates": true,
-					"name": [
-						"provide"
-					],
 					"payable": false,
 					"returnType": {
 						"displayName": [
-							"Result"
+							"psp34burnable_external",
+							"BurnOutput"
 						],
-						"type": 11
+						"type": 27
 					},
-					"selector": "0x3f1420fd"
+					"selector": "0x63c9877a"
 				},
 				{
 					"args": [
 						{
-							"name": "_share",
+							"label": "account",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34mintable_external",
+									"MintInput1"
 								],
-								"type": 0
-							}
-						}
-					],
-					"docs": [
-						" Returns the estimate of Token1 & Token2 that will be released on burning given _share"
-					],
-					"mutates": false,
-					"name": [
-						"getWithdrawEstimate"
-					],
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"Result"
-						],
-						"type": 13
-					},
-					"selector": "0x4d684150"
-				},
-				{
-					"args": [
-						{
-							"name": "_share",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
-							}
-						}
-					],
-					"docs": [
-						" Removes liquidity from the pool and releases corresponding Token1 & Token2 to the withdrawer"
-					],
-					"mutates": true,
-					"name": [
-						"withdraw"
-					],
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"Result"
-						],
-						"type": 13
-					},
-					"selector": "0x410fcc9d"
-				},
-				{
-					"args": [
-						{
-							"name": "_amountToken1",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
-							}
-						}
-					],
-					"docs": [
-						" Returns the amount of Token2 that the user will get when swapping a given amount of Token1 for Token2"
-					],
-					"mutates": false,
-					"name": [
-						"getSwapToken1EstimateGivenToken1"
-					],
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"Result"
-						],
-						"type": 11
-					},
-					"selector": "0x6bc9f484"
-				},
-				{
-					"args": [
-						{
-							"name": "_amountToken2",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
-							}
-						}
-					],
-					"docs": [
-						" Returns the amount of Token1 that the user should swap to get _amountToken2 in return"
-					],
-					"mutates": false,
-					"name": [
-						"getSwapToken1EstimateGivenToken2"
-					],
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"Result"
-						],
-						"type": 11
-					},
-					"selector": "0x397bf950"
-				},
-				{
-					"args": [
-						{
-							"name": "_amountToken1",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
+								"type": 8
 							}
 						},
 						{
-							"name": "_minToken2",
+							"label": "id",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34mintable_external",
+									"MintInput2"
 								],
-								"type": 0
+								"type": 1
 							}
 						}
 					],
-					"docs": [
-						" Swaps given amount of Token1 to Token2 using algorithmic price determination",
-						" Swap fails if Token2 amount is less than _minToken2"
-					],
+					"docs": [],
+					"label": "PSP34Mintable::mint",
 					"mutates": true,
-					"name": [
-						"swapToken1GivenToken1"
-					],
 					"payable": false,
 					"returnType": {
 						"displayName": [
-							"Result"
+							"psp34mintable_external",
+							"MintOutput"
 						],
-						"type": 11
+						"type": 27
 					},
-					"selector": "0x8adf0584"
+					"selector": "0x6c41f2ec"
 				},
 				{
 					"args": [
 						{
-							"name": "_amountToken2",
+							"label": "index",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34enumerable_external",
+									"TokenByIndexInput1"
 								],
-								"type": 0
-							}
-						},
-						{
-							"name": "_maxToken1",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
+								"type": 6
 							}
 						}
 					],
 					"docs": [
-						" Swaps given amount of Token1 to Token2 using algorithmic price determination",
-						" Swap fails if amount of Token1 required to obtain _amountToken2 exceeds _maxToken1"
+						" Returns a token `Id` at a given `index` of all the tokens stored by the contract.",
+						" Use along with `total_supply` to enumerate all tokens."
 					],
-					"mutates": true,
-					"name": [
-						"swapToken1GivenToken2"
-					],
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"Result"
-						],
-						"type": 11
-					},
-					"selector": "0x3f4171b1"
-				},
-				{
-					"args": [
-						{
-							"name": "_amountToken2",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
-							}
-						}
-					],
-					"docs": [
-						" Returns the amount of Token2 that the user will get when swapping a given amount of Token1 for Token2"
-					],
+					"label": "PSP34Enumerable::token_by_index",
 					"mutates": false,
-					"name": [
-						"getSwapToken2EstimateGivenToken2"
-					],
 					"payable": false,
 					"returnType": {
 						"displayName": [
-							"Result"
+							"psp34enumerable_external",
+							"TokenByIndexOutput"
 						],
-						"type": 11
+						"type": 32
 					},
-					"selector": "0xee312671"
+					"selector": "0xcd0340d0"
 				},
 				{
 					"args": [
 						{
-							"name": "_amountToken1",
+							"label": "owner",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34enumerable_external",
+									"OwnersTokenByIndexInput1"
 								],
-								"type": 0
+								"type": 8
+							}
+						},
+						{
+							"label": "index",
+							"type": {
+								"displayName": [
+									"psp34enumerable_external",
+									"OwnersTokenByIndexInput2"
+								],
+								"type": 6
 							}
 						}
 					],
 					"docs": [
-						" Returns the amount of Token2 that the user should swap to get _amountToken1 in return"
+						" Returns a token `Id` owned by `owner` at a given `index` of its token list.",
+						" Use along with `balance_of` to enumerate all of ``owner``'s tokens."
 					],
+					"label": "PSP34Enumerable::owners_token_by_index",
 					"mutates": false,
-					"name": [
-						"getSwapToken2EstimateGivenToken1"
-					],
 					"payable": false,
 					"returnType": {
 						"displayName": [
-							"Result"
+							"psp34enumerable_external",
+							"OwnersTokenByIndexOutput"
 						],
-						"type": 11
+						"type": 32
 					},
-					"selector": "0xe20b04d7"
+					"selector": "0x3bcfb511"
 				},
 				{
 					"args": [
 						{
-							"name": "_amountToken2",
+							"label": "id",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34metadata_external",
+									"GetAttributeInput1"
 								],
-								"type": 0
+								"type": 1
 							}
 						},
 						{
-							"name": "_minToken1",
+							"label": "key",
 							"type": {
 								"displayName": [
-									"Balance"
+									"psp34metadata_external",
+									"GetAttributeInput2"
 								],
-								"type": 0
+								"type": 7
 							}
 						}
 					],
 					"docs": [
-						" Swaps given amount of Token2 to Token1 using algorithmic price determination",
-						" Swap fails if Token1 amount is less than _minToken1"
+						" Returns the attribute of `id` for the given `key`.",
+						"",
+						" If `id` is a collection id of the token, it returns attributes for collection."
 					],
-					"mutates": true,
-					"name": [
-						"swapToken2GivenToken2"
-					],
+					"label": "PSP34Metadata::get_attribute",
+					"mutates": false,
 					"payable": false,
 					"returnType": {
 						"displayName": [
-							"Result"
+							"psp34metadata_external",
+							"GetAttributeOutput"
 						],
-						"type": 11
+						"type": 33
 					},
-					"selector": "0xa28d3f0a"
-				},
-				{
-					"args": [
-						{
-							"name": "_amountToken1",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
-							}
-						},
-						{
-							"name": "_maxToken2",
-							"type": {
-								"displayName": [
-									"Balance"
-								],
-								"type": 0
-							}
-						}
-					],
-					"docs": [
-						" Swaps given amount of Token2 to Token1 using algorithmic price determination",
-						" Swap fails if amount of Token2 required to obtain _amountToken1 exceeds _maxToken2"
-					],
-					"mutates": true,
-					"name": [
-						"swapToken2GivenToken1"
-					],
-					"payable": false,
-					"returnType": {
-						"displayName": [
-							"Result"
-						],
-						"type": 11
-					},
-					"selector": "0x1ccb6598"
+					"selector": "0xf19d48d1"
 				}
 			]
 		},
@@ -526,35 +553,26 @@ export const ABI = {
 				"fields": [
 					{
 						"layout": {
-							"cell": {
-								"key": "0x0000000000000000000000000000000000000000000000000000000000000000",
-								"ty": 0
-							}
-						},
-						"name": "totalShares"
-					},
-					{
-						"layout": {
-							"cell": {
-								"key": "0x0100000000000000000000000000000000000000000000000000000000000000",
-								"ty": 0
-							}
-						},
-						"name": "totalToken1"
-					},
-					{
-						"layout": {
-							"cell": {
-								"key": "0x0200000000000000000000000000000000000000000000000000000000000000",
-								"ty": 0
-							}
-						},
-						"name": "totalToken2"
-					},
-					{
-						"layout": {
 							"struct": {
 								"fields": [
+									{
+										"layout": {
+											"cell": {
+												"key": "0x0dbe693b00000000000000000000000000000000000000000000000000000000",
+												"ty": 0
+											}
+										},
+										"name": "token_owner"
+									},
+									{
+										"layout": {
+											"cell": {
+												"key": "0x0ebe693b00000000000000000000000000000000000000000000000000000000",
+												"ty": 12
+											}
+										},
+										"name": "operator_approvals"
+									},
 									{
 										"layout": {
 											"struct": {
@@ -562,74 +580,73 @@ export const ABI = {
 													{
 														"layout": {
 															"cell": {
-																"key": "0x0300000000000000000000000000000000000000000000000000000000000000",
-																"ty": 1
+																"key": "0x4cefab1200000000000000000000000000000000000000000000000000000000",
+																"ty": 18
 															}
 														},
-														"name": "header"
+														"name": "enumerable"
 													},
 													{
 														"layout": {
-															"struct": {
-																"fields": [
-																	{
-																		"layout": {
-																			"cell": {
-																				"key": "0x0400000000000000000000000000000000000000000000000000000000000000",
-																				"ty": 2
-																			}
-																		},
-																		"name": "len"
-																	},
-																	{
-																		"layout": {
-																			"array": {
-																				"cellsPerElem": 1,
+															"enum": {
+																"dispatchKey": "0x4defab1200000000000000000000000000000000000000000000000000000000",
+																"variants": {
+																	"0": {
+																		"fields": [
+																			{
 																				"layout": {
 																					"cell": {
-																						"key": "0x0400000001000000000000000000000000000000000000000000000000000000",
-																						"ty": 3
+																						"key": "0x4eefab1200000000000000000000000000000000000000000000000000000000",
+																						"ty": 15
 																					}
 																				},
-																				"len": 4294967295,
-																				"offset": "0x0500000000000000000000000000000000000000000000000000000000000000"
+																				"name": null
 																			}
-																		},
-																		"name": "elems"
+																		]
+																	},
+																	"1": {
+																		"fields": []
 																	}
-																]
+																}
 															}
 														},
-														"name": "entries"
+														"name": "_reserved"
 													}
 												]
 											}
 										},
-										"name": "keys"
+										"name": "balances"
 									},
 									{
 										"layout": {
-											"hash": {
-												"layout": {
-													"cell": {
-														"key": "0x0500000001000000000000000000000000000000000000000000000000000000",
-														"ty": 8
+											"enum": {
+												"dispatchKey": "0x0fbe693b00000000000000000000000000000000000000000000000000000000",
+												"variants": {
+													"0": {
+														"fields": [
+															{
+																"layout": {
+																	"cell": {
+																		"key": "0x10be693b00000000000000000000000000000000000000000000000000000000",
+																		"ty": 15
+																	}
+																},
+																"name": null
+															}
+														]
+													},
+													"1": {
+														"fields": []
 													}
-												},
-												"offset": "0x0400000001000000000000000000000000000000000000000000000000000000",
-												"strategy": {
-													"hasher": "Blake2x256",
-													"postfix": "",
-													"prefix": "0x696e6b20686173686d6170"
 												}
 											}
 										},
-										"name": "values"
+										"name": "_reserved"
 									}
 								]
 							}
 						},
-						"name": "shares"
+						"name": "psp34"
 					},
 					{
 						"layout": {
@@ -637,79 +654,43 @@ export const ABI = {
 								"fields": [
 									{
 										"layout": {
-											"struct": {
-												"fields": [
-													{
-														"layout": {
-															"cell": {
-																"key": "0x0500000001000000000000000000000000000000000000000000000000000000",
-																"ty": 1
-															}
-														},
-														"name": "header"
-													},
-													{
-														"layout": {
-															"struct": {
-																"fields": [
-																	{
-																		"layout": {
-																			"cell": {
-																				"key": "0x0600000001000000000000000000000000000000000000000000000000000000",
-																				"ty": 2
-																			}
-																		},
-																		"name": "len"
-																	},
-																	{
-																		"layout": {
-																			"array": {
-																				"cellsPerElem": 1,
-																				"layout": {
-																					"cell": {
-																						"key": "0x0600000002000000000000000000000000000000000000000000000000000000",
-																						"ty": 3
-																					}
-																				},
-																				"len": 4294967295,
-																				"offset": "0x0700000001000000000000000000000000000000000000000000000000000000"
-																			}
-																		},
-																		"name": "elems"
-																	}
-																]
-															}
-														},
-														"name": "entries"
-													}
-												]
+											"cell": {
+												"key": "0xb36ee29c00000000000000000000000000000000000000000000000000000000",
+												"ty": 8
 											}
 										},
-										"name": "keys"
+										"name": "owner"
 									},
 									{
 										"layout": {
-											"hash": {
-												"layout": {
-													"cell": {
-														"key": "0x0700000002000000000000000000000000000000000000000000000000000000",
-														"ty": 8
+											"enum": {
+												"dispatchKey": "0xb46ee29c00000000000000000000000000000000000000000000000000000000",
+												"variants": {
+													"0": {
+														"fields": [
+															{
+																"layout": {
+																	"cell": {
+																		"key": "0xb56ee29c00000000000000000000000000000000000000000000000000000000",
+																		"ty": 15
+																	}
+																},
+																"name": null
+															}
+														]
+													},
+													"1": {
+														"fields": []
 													}
-												},
-												"offset": "0x0600000002000000000000000000000000000000000000000000000000000000",
-												"strategy": {
-													"hasher": "Blake2x256",
-													"postfix": "",
-													"prefix": "0x696e6b20686173686d6170"
 												}
 											}
 										},
-										"name": "values"
+										"name": "_reserved"
 									}
 								]
 							}
 						},
-						"name": "token1Balance"
+						"name": "ownable"
 					},
 					{
 						"layout": {
@@ -717,88 +698,43 @@ export const ABI = {
 								"fields": [
 									{
 										"layout": {
-											"struct": {
-												"fields": [
-													{
-														"layout": {
-															"cell": {
-																"key": "0x0700000002000000000000000000000000000000000000000000000000000000",
-																"ty": 1
-															}
-														},
-														"name": "header"
-													},
-													{
-														"layout": {
-															"struct": {
-																"fields": [
-																	{
-																		"layout": {
-																			"cell": {
-																				"key": "0x0800000002000000000000000000000000000000000000000000000000000000",
-																				"ty": 2
-																			}
-																		},
-																		"name": "len"
-																	},
-																	{
-																		"layout": {
-																			"array": {
-																				"cellsPerElem": 1,
-																				"layout": {
-																					"cell": {
-																						"key": "0x0800000003000000000000000000000000000000000000000000000000000000",
-																						"ty": 3
-																					}
-																				},
-																				"len": 4294967295,
-																				"offset": "0x0900000002000000000000000000000000000000000000000000000000000000"
-																			}
-																		},
-																		"name": "elems"
-																	}
-																]
-															}
-														},
-														"name": "entries"
-													}
-												]
+											"cell": {
+												"key": "0xc4c906f100000000000000000000000000000000000000000000000000000000",
+												"ty": 22
 											}
 										},
-										"name": "keys"
+										"name": "attributes"
 									},
 									{
 										"layout": {
-											"hash": {
-												"layout": {
-													"cell": {
-														"key": "0x0900000003000000000000000000000000000000000000000000000000000000",
-														"ty": 8
+											"enum": {
+												"dispatchKey": "0xc5c906f100000000000000000000000000000000000000000000000000000000",
+												"variants": {
+													"0": {
+														"fields": [
+															{
+																"layout": {
+																	"cell": {
+																		"key": "0xc6c906f100000000000000000000000000000000000000000000000000000000",
+																		"ty": 15
+																	}
+																},
+																"name": null
+															}
+														]
+													},
+													"1": {
+														"fields": []
 													}
-												},
-												"offset": "0x0800000003000000000000000000000000000000000000000000000000000000",
-												"strategy": {
-													"hasher": "Blake2x256",
-													"postfix": "",
-													"prefix": "0x696e6b20686173686d6170"
 												}
 											}
 										},
-										"name": "values"
+										"name": "_reserved"
 									}
 								]
 							}
 						},
-						"name": "token2Balance"
-					},
-					{
-						"layout": {
-							"cell": {
-								"key": "0x0900000003000000000000000000000000000000000000000000000000000000",
-								"ty": 0
-							}
-						},
-						"name": "fees"
+						"name": "metadata"
 					}
 				]
 			}
@@ -808,52 +744,34 @@ export const ABI = {
 				"id": 0,
 				"type": {
 					"def": {
-						"primitive": "u128"
-					}
-				}
-			},
-			{
-				"id": 1,
-				"type": {
-					"def": {
 						"composite": {
 							"fields": [
 								{
-									"name": "last_vacant",
-									"type": 2,
-									"typeName": "Index"
-								},
-								{
-									"name": "len",
-									"type": 2,
-									"typeName": "u32"
-								},
-								{
-									"name": "len_entries",
-									"type": 2,
-									"typeName": "u32"
+									"type": 10
 								}
 							]
 						}
 					},
+					"params": [
+						{
+							"name": "K",
+							"type": 1
+						},
+						{
+							"name": "V",
+							"type": 8
+						}
+					],
 					"path": [
-						"ink_storage",
-						"collections",
-						"stash",
-						"Header"
+						"openbrush_lang",
+						"storage",
+						"mapping",
+						"Mapping"
 					]
 				}
 			},
 			{
-				"id": 2,
-				"type": {
-					"def": {
-						"primitive": "u32"
-					}
-				}
-			},
-			{
-				"id": 3,
+				"id": 1,
 				"type": {
 					"def": {
 						"variant": {
@@ -861,48 +779,132 @@ export const ABI = {
 								{
 									"fields": [
 										{
-											"type": 7,
-											"typeName": "VacantEntry"
+											"type": 2,
+											"typeName": "u8"
 										}
 									],
 									"index": 0,
-									"name": "Vacant"
+									"name": "U8"
+								},
+								{
+									"fields": [
+										{
+											"type": 3,
+											"typeName": "u16"
+										}
+									],
+									"index": 1,
+									"name": "U16"
 								},
 								{
 									"fields": [
 										{
 											"type": 4,
-											"typeName": "T"
+											"typeName": "u32"
 										}
 									],
-									"index": 1,
-									"name": "Occupied"
+									"index": 2,
+									"name": "U32"
+								},
+								{
+									"fields": [
+										{
+											"type": 5,
+											"typeName": "u64"
+										}
+									],
+									"index": 3,
+									"name": "U64"
+								},
+								{
+									"fields": [
+										{
+											"type": 6,
+											"typeName": "u128"
+										}
+									],
+									"index": 4,
+									"name": "U128"
+								},
+								{
+									"fields": [
+										{
+											"type": 7,
+											"typeName": "Vec<u8>"
+										}
+									],
+									"index": 5,
+									"name": "Bytes"
 								}
 							]
 						}
 					},
-					"params": [
-						{
-							"name": "T",
-							"type": 4
-						}
-					],
 					"path": [
-						"ink_storage",
-						"collections",
-						"stash",
-						"Entry"
+						"openbrush_contracts",
+						"traits",
+						"types",
+						"Id"
 					]
+				}
+			},
+			{
+				"id": 2,
+				"type": {
+					"def": {
+						"primitive": "u8"
+					}
+				}
+			},
+			{
+				"id": 3,
+				"type": {
+					"def": {
+						"primitive": "u16"
+					}
 				}
 			},
 			{
 				"id": 4,
 				"type": {
 					"def": {
+						"primitive": "u32"
+					}
+				}
+			},
+			{
+				"id": 5,
+				"type": {
+					"def": {
+						"primitive": "u64"
+					}
+				}
+			},
+			{
+				"id": 6,
+				"type": {
+					"def": {
+						"primitive": "u128"
+					}
+				}
+			},
+			{
+				"id": 7,
+				"type": {
+					"def": {
+						"sequence": {
+							"type": 2
+						}
+					}
+				}
+			},
+			{
+				"id": 8,
+				"type": {
+					"def": {
 						"composite": {
 							"fields": [
 								{
-									"type": 5,
+									"type": 9,
 									"typeName": "[u8; 32]"
 								}
 							]
@@ -916,93 +918,13 @@ export const ABI = {
 				}
 			},
 			{
-				"id": 5,
+				"id": 9,
 				"type": {
 					"def": {
 						"array": {
 							"len": 32,
-							"type": 6
+							"type": 2
 						}
-					}
-				}
-			},
-			{
-				"id": 6,
-				"type": {
-					"def": {
-						"primitive": "u8"
-					}
-				}
-			},
-			{
-				"id": 7,
-				"type": {
-					"def": {
-						"composite": {
-							"fields": [
-								{
-									"name": "next",
-									"type": 2,
-									"typeName": "Index"
-								},
-								{
-									"name": "prev",
-									"type": 2,
-									"typeName": "Index"
-								}
-							]
-						}
-					},
-					"path": [
-						"ink_storage",
-						"collections",
-						"stash",
-						"VacantEntry"
-					]
-				}
-			},
-			{
-				"id": 8,
-				"type": {
-					"def": {
-						"composite": {
-							"fields": [
-								{
-									"name": "value",
-									"type": 0,
-									"typeName": "V"
-								},
-								{
-									"name": "key_index",
-									"type": 2,
-									"typeName": "KeyIndex"
-								}
-							]
-						}
-					},
-					"params": [
-						{
-							"name": "V",
-							"type": 0
-						}
-					],
-					"path": [
-						"ink_storage",
-						"collections",
-						"hashmap",
-						"ValueEntry"
-					]
-				}
-			},
-			{
-				"id": 9,
-				"type": {
-					"def": {
-						"tuple": [
-							0,
-							0,
-							0
-						]
 					}
 				}
 			},
@@ -1010,12 +932,9 @@ export const ABI = {
 				"id": 10,
 				"type": {
 					"def": {
-						"tuple": [
-							0,
-							0,
-							0,
-							0
-						]
+						"sequence": {
+							"type": 11
+						}
 					}
 				}
 			},
@@ -1023,89 +942,40 @@ export const ABI = {
 				"id": 11,
 				"type": {
 					"def": {
-						"variant": {
-							"variants": [
-								{
-									"fields": [
-										{
-											"type": 0
-										}
-									],
-									"index": 0,
-									"name": "Ok"
-								},
-								{
-									"fields": [
-										{
-											"type": 12
-										}
-									],
-									"index": 1,
-									"name": "Err"
-								}
-							]
-						}
-					},
-					"params": [
-						{
-							"name": "T",
-							"type": 0
-						},
-						{
-							"name": "E",
-							"type": 12
-						}
-					],
-					"path": [
-						"Result"
-					]
+						"tuple": [
+							1,
+							8
+						]
+					}
 				}
 			},
 			{
 				"id": 12,
 				"type": {
 					"def": {
-						"variant": {
-							"variants": [
+						"composite": {
+							"fields": [
 								{
-									"index": 0,
-									"name": "ZeroLiquidity"
-								},
-								{
-									"index": 1,
-									"name": "ZeroAmount"
-								},
-								{
-									"index": 2,
-									"name": "InsufficientAmount"
-								},
-								{
-									"index": 3,
-									"name": "NonEquivalentValue"
-								},
-								{
-									"index": 4,
-									"name": "ThresholdNotReached"
-								},
-								{
-									"index": 5,
-									"name": "InvalidShare"
-								},
-								{
-									"index": 6,
-									"name": "InsufficientLiquidity"
-								},
-								{
-									"index": 7,
-									"name": "SlippageExceeded"
+									"type": 16
 								}
 							]
 						}
 					},
+					"params": [
+						{
+							"name": "K",
+							"type": 13
+						},
+						{
+							"name": "V",
+							"type": 15
+						}
+					],
 					"path": [
-						"amm",
-						"amm",
-						"Error"
+						"openbrush_lang",
+						"storage",
+						"mapping",
+						"Mapping"
 					]
 				}
 			},
@@ -1113,12 +983,240 @@ export const ABI = {
 				"id": 13,
 				"type": {
 					"def": {
+						"tuple": [
+							8,
+							8,
+							14
+						]
+					}
+				}
+			},
+			{
+				"id": 14,
+				"type": {
+					"def": {
+						"variant": {
+							"variants": [
+								{
+									"index": 0,
+									"name": "None"
+								},
+								{
+									"fields": [
+										{
+											"type": 1
+										}
+									],
+									"index": 1,
+									"name": "Some"
+								}
+							]
+						}
+					},
+					"params": [
+						{
+							"name": "T",
+							"type": 1
+						}
+					],
+					"path": [
+						"Option"
+					]
+				}
+			},
+			{
+				"id": 15,
+				"type": {
+					"def": {
+						"tuple": []
+					}
+				}
+			},
+			{
+				"id": 16,
+				"type": {
+					"def": {
+						"sequence": {
+							"type": 17
+						}
+					}
+				}
+			},
+			{
+				"id": 17,
+				"type": {
+					"def": {
+						"tuple": [
+							13,
+							15
+						]
+					}
+				}
+			},
+			{
+				"id": 18,
+				"type": {
+					"def": {
+						"composite": {
+							"fields": [
+								{
+									"type": 20
+								}
+							]
+						}
+					},
+					"params": [
+						{
+							"name": "K",
+							"type": 19
+						},
+						{
+							"name": "V",
+							"type": 1
+						}
+					],
+					"path": [
+						"openbrush_lang",
+						"storage",
+						"multi_mapping",
+						"MultiMapping"
+					]
+				}
+			},
+			{
+				"id": 19,
+				"type": {
+					"def": {
+						"variant": {
+							"variants": [
+								{
+									"index": 0,
+									"name": "None"
+								},
+								{
+									"fields": [
+										{
+											"type": 8
+										}
+									],
+									"index": 1,
+									"name": "Some"
+								}
+							]
+						}
+					},
+					"params": [
+						{
+							"name": "T",
+							"type": 8
+						}
+					],
+					"path": [
+						"Option"
+					]
+				}
+			},
+			{
+				"id": 20,
+				"type": {
+					"def": {
+						"sequence": {
+							"type": 21
+						}
+					}
+				}
+			},
+			{
+				"id": 21,
+				"type": {
+					"def": {
+						"tuple": [
+							19,
+							1
+						]
+					}
+				}
+			},
+			{
+				"id": 22,
+				"type": {
+					"def": {
+						"composite": {
+							"fields": [
+								{
+									"type": 24
+								}
+							]
+						}
+					},
+					"params": [
+						{
+							"name": "K",
+							"type": 23
+						},
+						{
+							"name": "V",
+							"type": 7
+						}
+					],
+					"path": [
+						"openbrush_lang",
+						"storage",
+						"mapping",
+						"Mapping"
+					]
+				}
+			},
+			{
+				"id": 23,
+				"type": {
+					"def": {
+						"tuple": [
+							1,
+							7
+						]
+					}
+				}
+			},
+			{
+				"id": 24,
+				"type": {
+					"def": {
+						"sequence": {
+							"type": 25
+						}
+					}
+				}
+			},
+			{
+				"id": 25,
+				"type": {
+					"def": {
+						"tuple": [
+							23,
+							7
+						]
+					}
+				}
+			},
+			{
+				"id": 26,
+				"type": {
+					"def": {
+						"primitive": "bool"
+					}
+				}
+			},
+			{
+				"id": 27,
+				"type": {
+					"def": {
 						"variant": {
 							"variants": [
 								{
 									"fields": [
 										{
-											"type": 14
+											"type": 15
 										}
 									],
 									"index": 0,
@@ -1127,7 +1225,7 @@ export const ABI = {
 								{
 									"fields": [
 										{
-											"type": 12
+											"type": 28
 										}
 									],
 									"index": 1,
@@ -1139,11 +1237,11 @@ export const ABI = {
 					"params": [
 						{
 							"name": "T",
-							"type": 14
+							"type": 15
 						},
 						{
 							"name": "E",
-							"type": 12
+							"type": 28
 						}
 					],
 					"path": [
@@ -1152,14 +1250,208 @@ export const ABI = {
 				}
 			},
 			{
-				"id": 14,
+				"id": 28,
 				"type": {
 					"def": {
-						"tuple": [
-							0,
-							0
-						]
+						"variant": {
+							"variants": [
+								{
+									"fields": [
+										{
+											"type": 29,
+											"typeName": "String"
+										}
+									],
+									"index": 0,
+									"name": "Custom"
+								},
+								{
+									"index": 1,
+									"name": "SelfApprove"
+								},
+								{
+									"index": 2,
+									"name": "NotApproved"
+								},
+								{
+									"index": 3,
+									"name": "TokenExists"
+								},
+								{
+									"index": 4,
+									"name": "TokenNotExists"
+								},
+								{
+									"fields": [
+										{
+											"type": 29,
+											"typeName": "String"
+										}
+									],
+									"index": 5,
+									"name": "SafeTransferCheckFailed"
+								}
+							]
+						}
+					},
+					"path": [
+						"openbrush_contracts",
+						"traits",
+						"errors",
+						"psp34",
+						"PSP34Error"
+					]
+				}
+			},
+			{
+				"id": 29,
+				"type": {
+					"def": {
+						"primitive": "str"
 					}
+				}
+			},
+			{
+				"id": 30,
+				"type": {
+					"def": {
+						"variant": {
+							"variants": [
+								{
+									"fields": [
+										{
+											"type": 15
+										}
+									],
+									"index": 0,
+									"name": "Ok"
+								},
+								{
+									"fields": [
+										{
+											"type": 31
+										}
+									],
+									"index": 1,
+									"name": "Err"
+								}
+							]
+						}
+					},
+					"params": [
+						{
+							"name": "T",
+							"type": 15
+						},
+						{
+							"name": "E",
+							"type": 31
+						}
+					],
+					"path": [
+						"Result"
+					]
+				}
+			},
+			{
+				"id": 31,
+				"type": {
+					"def": {
+						"variant": {
+							"variants": [
+								{
+									"index": 0,
+									"name": "CallerIsNotOwner"
+								},
+								{
+									"index": 1,
+									"name": "NewOwnerIsZero"
+								}
+							]
+						}
+					},
+					"path": [
+						"openbrush_contracts",
+						"traits",
+						"errors",
+						"ownable",
+						"OwnableError"
+					]
+				}
+			},
+			{
+				"id": 32,
+				"type": {
+					"def": {
+						"variant": {
+							"variants": [
+								{
+									"fields": [
+										{
+											"type": 1
+										}
+									],
+									"index": 0,
+									"name": "Ok"
+								},
+								{
+									"fields": [
+										{
+											"type": 28
+										}
+									],
+									"index": 1,
+									"name": "Err"
+								}
+							]
+						}
+					},
+					"params": [
+						{
+							"name": "T",
+							"type": 1
+						},
+						{
+							"name": "E",
+							"type": 28
+						}
+					],
+					"path": [
+						"Result"
+					]
+				}
+			},
+			{
+				"id": 33,
+				"type": {
+					"def": {
+						"variant": {
+							"variants": [
+								{
+									"index": 0,
+									"name": "None"
+								},
+								{
+									"fields": [
+										{
+											"type": 7
+										}
+									],
+									"index": 1,
+									"name": "Some"
+								}
+							]
+						}
+					},
+					"params": [
+						{
+							"name": "T",
+							"type": 7
+						}
+					],
+					"path": [
+						"Option"
+					]
 				}
 			}
 		]
