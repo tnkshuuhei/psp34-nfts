@@ -3,11 +3,6 @@ import React, { useState, useEffect } from 'react'
 
 export const ConnectContext = React.createContext()
 
-let pjs
-
-if (typeof window !== 'undefined') {
-	pjs = window.injectedWeb3
-}
 const WS_PROVIDER = 'wss://shibuya.public.blastapi.io'
 const DAPP_NAME = 'Mint Shiden NFTs'
 export const ConnectProvider = ({ children }) => {
@@ -18,7 +13,6 @@ export const ConnectProvider = ({ children }) => {
 	}, [])
 	const connectWallet = async () => {
 		try {
-			if (!pjs) return alert('Please install polkadot-js ')
 			const { web3Enable, web3Accounts } = await import("@polkadot/extension-dapp");
 			const extensions = await web3Enable(DAPP_NAME);
 			if (extensions.length === 0) {
@@ -33,7 +27,6 @@ export const ConnectProvider = ({ children }) => {
 			const allaccounts = await web3Accounts();
 			const account = allaccounts[0];
 			setCurrentAccount(account)
-			if (!pjs) return alert('Please install polkadot-js ')
 		} catch (error) {
 			console.error(error)
 		}

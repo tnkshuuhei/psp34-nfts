@@ -4,7 +4,6 @@ import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
 import { ABI, CONTRACT_ADDRESS } from './constants'
 import { ContractPromise } from '@polkadot/api-contract'
-//import { web3FromSource } from '@polkadot/extension-dapp'
 
 const style = {
 	wrapper: `w-screen flex items-center justify-center mt-14`,
@@ -20,21 +19,24 @@ const Main = () => {
 	const [Image, setImage] = useState();
 	const [Description, setDescription] = useState();
 	const gasLimit = -1;
+	const account = currentAccount
 
-	const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
-	console.log('psp34:', psp34);
 	const setupContract = async () => {
 		try {
+			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
-			const injector = await web3FromSource(currentAccount.meta.source);
-			const mintExtrinsic = await psp34.tx.mintToken({ gasLimit });
-			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
+			const injector = await web3FromSource(account.meta.source);
+			console.log(psp34.tx)
+			//const mintExtrinsic = await psp34.tx.mintToken({ gasLimit });
+			//console.log(mintExtrinsic)
+			/**
+			mintExtrinsic.signAndSend(account.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
 					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
 				} else {
 					console.log(`Current status: ${status.type}`);
 				}
-			})
+			}) */
 		} catch (error) {
 			console.log(':( transaction failed', error);
 		}
