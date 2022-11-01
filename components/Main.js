@@ -16,17 +16,24 @@ const style = {
 	activetab: `bg-[#191B1F]`,
 }
 const Main = () => {
-	const { currentAccount, api } = useContext(ConnectContext);
-	const [activeTab, setActiveTab] = useState('collection');
-	const [Name, setName] = useState();//todo
-	const [Image, setImage] = useState();//todo
-	const [Description, setDescription] = useState();//todo
-	const date = '2022/11/01'//todo
-	const cid = '' //todo
-	const [collectionName, setCollectionName] = useState();//todo
-	const [symbol, setSymbol] = useState()//todo
 	const gasLimit = 18750000000;
 	const storageDepositLimit = null
+	const day = new Date();
+	const today = day
+		.toISOString()
+		.replace('T', '-')
+		.slice(0, -8);
+
+	const { currentAccount, api } = useContext(ConnectContext);
+	const [activeTab, setActiveTab] = useState('collection');
+
+	const [Image, setImage] = useState();//todo. not contained in argumenets of mintwithattribute
+	const [Name, setName] = useState();//todo
+	const [cid, setCid] = useState(); //todo
+	const date = today
+
+	const [collectionName, setCollectionName] = useState();//todo
+	const [symbol, setSymbol] = useState()//todo
 
 	const setupContract = async () => {
 		try {
@@ -113,6 +120,7 @@ const Main = () => {
 								onChange={e => setImage(e.target.value)}
 							/>
 						</div>
+						Name
 						<div className={style.transferPropContainer}>
 							<input
 								type='text'
@@ -121,12 +129,13 @@ const Main = () => {
 								onChange={e => setName(e.target.value)}
 							/>
 						</div>
+						Contents ID
 						<div className={style.transferPropContainer}>
 							<input
 								type='text'
 								className={style.transferPropInput}
-								placeholder='Description'
-								onChange={e => setDescription(e.target.value)}
+								placeholder='Contents ID'
+								onChange={e => setCid(e.target.value)}
 							/>
 						</div>
 						<div onClick={() => setupContract()}>
