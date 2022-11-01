@@ -3,7 +3,6 @@ import { useContext, useState } from 'react'
 import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
 import { ABI, CONTRACT_ADDRESS } from '../lib/constants'
-//import {wasm} from '../lib/psp34_contract.wasm'
 import { CodePromise, ContractPromise } from '@polkadot/api-contract'
 
 const style = {
