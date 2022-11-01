@@ -8,12 +8,16 @@ import { CodePromise, ContractPromise } from '@polkadot/api-contract'
 const style = {
 	wrapper: `h-screen w-screen flex items-center justify-center mt-14`,
 	content: `bg-[#191B1F] w-[40rem] rounded-2xl p-4`,
-	formHeader: `px-2 flex items-center justify-between font-semibold text-xl`,
+	formHeader: `cursor-pointer px-2 flex items-center justify-between font-semibold text-xl`,
 	transferPropContainer: `bg-[#20242A] my-4 rounded-2xl p-4 text-3xl  border border-[#20242A] hover:border-[#41444F]  flex justify-between`,
 	transferPropInput: `bg-transparent placeholder:text-[#B2B9D2] outline-none mb-6 w-full text-2xl`,
+	inactivetab: ` text-gray-600 inline-block p-4 rounded-t-lg hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300`,
+	activetab: `bg-[#191B1F]`,
 }
 const Main = () => {
 	const { currentAccount, api } = useContext(ConnectContext)
+	const [activeTab, setActiveTab] = useState('collection');
+	console.log(activeTab);
 	const [Name, setName] = useState();
 	const [Image, setImage] = useState();
 	const [Description, setDescription] = useState();
@@ -46,7 +50,8 @@ const Main = () => {
 		<div className={style.wrapper}>
 			<div className={style.content}>
 				<div className={style.formHeader}>
-					<div>Setup</div>
+					<div className={`${style.activetab} ${activeTab !== 'collection' && style.inactivetab}`} onClick={() => setActiveTab('collection')}>Create Collection</div>
+					<div className={`${style.activetab} ${activeTab !== 'mint' && style.inactivetab}`} onClick={() => setActiveTab('mint')}>Mint NFTs</div>
 					<div>
 						<RiSettings3Fill />
 					</div>
@@ -80,7 +85,7 @@ const Main = () => {
 				</div>
 			</div>
 
-		</div>
+		</div >
 	)
 }
 export default Main
