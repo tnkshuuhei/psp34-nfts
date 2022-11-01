@@ -4,6 +4,9 @@ import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
 import { ABI, CONTRACT_ADDRESS } from '../lib/constants'
 import { CodePromise, ContractPromise } from '@polkadot/api-contract'
+import { NFTStorage, File } from 'nft.storage'
+import Image from 'next/image'
+const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGJDMjA0MGM3NEM3MGNlRTYyMTMyNDk4Qjg1ZkEwYzQyMDM3MjM4RTciLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2NzI5OTQ2MjIxOCwibmFtZSI6IlBTUDM0In0.8tpKbH8eNXdUUST5h0OTOvn-EKeiPhLeZSCLPR6uOk4'
 
 const style = {
 	wrapper: `h-screen w-screen flex items-center justify-center mt-14`,
@@ -13,6 +16,7 @@ const style = {
 	transferPropInput: `bg-transparent placeholder:text-[#B2B9D2] outline-none mb-6 w-full text-2xl`,
 	inactivetab: ` text-gray-600 inline-block p-4 rounded-t-lg hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300`,
 	activetab: `bg-[#191B1F]`,
+	Image: `flex items-center justify-center`,
 }
 const Main = () => {
 	const gasLimit = 18750000000;
@@ -26,21 +30,70 @@ const Main = () => {
 	const { currentAccount, api } = useContext(ConnectContext);
 	const [activeTab, setActiveTab] = useState('collection');
 
-	const [Image, setImage] = useState();//todo. not contained in argumenets of mintwithattribute
-	const [Name, setName] = useState();//todo
-	const [cid, setCid] = useState(); //todo
+	const [base64, setBase64] = useState(null);
+	const [image, setImage] = useState();//todo
+	const [name, setName] = useState('');//todo
+	const [description, setDescription] = useState('');
+	const [cid, setCid] = useState(''); //todo
+	const [blob, setBlob] = useState(null);
+	const [fileName, setFileName] = useState(null);
+	const [type, setType] = useState(null);
 	const date = today
 
 	const [collectionName, setCollectionName] = useState();//todo
 	const [symbol, setSymbol] = useState()//todo
 
+	const select = (e) => {
+		const file = e.target.files[0];
+		console.log(file);
+
+		if (file) {
+			readAsBlob(file);
+			readAsBase64(file);
+			setType(file.type);
+			setFileName(file.name);
+		}
+	};
+
+	const readAsBlob = (file) => {
+		const reader = new FileReader();
+		reader.readAsArrayBuffer(file);
+		reader.onload = () => {
+			console.log(reader.result);
+			setBlob(reader.result);
+		};
+	};
+	const readAsBase64 = (file) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => {
+			console.log(reader.result);
+			setBase64(reader.result);
+		};
+	};
+
+	const nftStorage = new NFTStorage({
+		token: NFT_STORAGE_KEY,
+	});
+
+	const store = async (name, description, data, fileName, type) => {
+		const metadata = await nftStorage.store({
+			name,
+			description,
+			image: new File([data], fileName, { type }),
+		});
+		return metadata;
+	};
 	const setupContract = async () => {
 		try {
-			await api.isReady
+			//////////////////////////////////
+			const metadata = await store(name, description, blob, fileName, type);
+			const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
+			//////////////////////////////////
 			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
-			const mintExtrinsic = await psp34.tx.mintWithAttribute({ gasLimit }, Name, currentAccount, date, cid);
+			const mintExtrinsic = await psp34.tx.mintWithAttribute({ gasLimit }, name, currentAccount, date, inputUrl);
 
 			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
@@ -111,30 +164,44 @@ const Main = () => {
 					</div>
 				) : (
 					<div>
-						<div className={style.transferPropContainer}>
+						<div>
+							Upload Image
 							<input
 								type='file'
+								accept='image/*'
 								className={style.transferPropInput}
 								placeholder='Upload Image File for NFT'
-								onChange={e => setImage(e.target.value)}
+								onChange={select}
 							/>
+							{base64 ? (
+								<Image
+									src={base64}
+									alt="hoge"
+									className={style.Image}
+									width={250}
+									height={250}
+								/>
+							) : (
+								<></>
+							)}
+
 						</div>
 						Name
 						<div className={style.transferPropContainer}>
 							<input
 								type='text'
 								className={style.transferPropInput}
-								placeholder='NFTs Name'
+								placeholder='Name of this NFT'
 								onChange={e => setName(e.target.value)}
 							/>
 						</div>
-						Contents ID
+						Description
 						<div className={style.transferPropContainer}>
 							<input
 								type='text'
 								className={style.transferPropInput}
-								placeholder='Contents ID'
-								onChange={e => setCid(e.target.value)}
+								placeholder='Description of this NFT'
+								onChange={e => setDescription(e.target.value)}
 							/>
 						</div>
 						<div onClick={() => setupContract()}>
