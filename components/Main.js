@@ -15,7 +15,7 @@ const style = {
 	activetab: `bg-[#191B1F]`,
 }
 const Main = () => {
-	const { currentAccount, api } = useContext(ConnectContext)
+	const { currentAccount, api } = useContext(ConnectContext);
 	const [activeTab, setActiveTab] = useState('collection');
 	const [Name, setName] = useState();
 	const [Image, setImage] = useState();
@@ -55,33 +55,62 @@ const Main = () => {
 						<RiSettings3Fill />
 					</div>
 				</div>
-				<div className={style.transferPropContainer}>
-					<input
-						type='file'
-						className={style.transferPropInput}
-						placeholder='Upload Image File for NFT'
-						onChange={e => setImage(e.target.value)}
-					/>
-				</div>
-				<div className={style.transferPropContainer}>
-					<input
-						type='text'
-						className={style.transferPropInput}
-						placeholder='NFTs Name'
-						onChange={e => setName(e.target.value)}
-					/>
-				</div>
-				<div className={style.transferPropContainer}>
-					<input
-						type='text'
-						className={style.transferPropInput}
-						placeholder='Description'
-						onChange={e => setDescription(e.target.value)}
-					/>
-				</div>
-				<div onClick={() => setupContract()}>
-					<Button title='Mint' />
-				</div>
+				{activeTab === 'collection' ? (
+					<div>
+						Collection Name
+						<div className={style.transferPropContainer}>
+							<input
+								type='text'
+								className={style.transferPropInput}
+								placeholder='e.g. Bored Ape Yacht Club'
+								onChange={e => setName(e.target.value)}
+							/>
+						</div>
+						Symbol
+						<div className={style.transferPropContainer}>
+							<input
+								type='text'
+								className={style.transferPropInput}
+								placeholder='e.g. BAYC'
+								onChange={e => setDescription(e.target.value)}
+							/>
+						</div>
+						<div onClick={() => setupContract()}>
+							<Button title='Create' />
+						</div>
+					</div>
+				) : (
+					<div>
+						<div className={style.transferPropContainer}>
+							<input
+								type='file'
+								className={style.transferPropInput}
+								placeholder='Upload Image File for NFT'
+								onChange={e => setImage(e.target.value)}
+							/>
+						</div>
+						<div className={style.transferPropContainer}>
+							<input
+								type='text'
+								className={style.transferPropInput}
+								placeholder='NFTs Name'
+								onChange={e => setName(e.target.value)}
+							/>
+						</div>
+						<div className={style.transferPropContainer}>
+							<input
+								type='text'
+								className={style.transferPropInput}
+								placeholder='Description'
+								onChange={e => setDescription(e.target.value)}
+							/>
+						</div>
+						<div onClick={() => setupContract()}>
+							<Button title='Mint' />
+						</div>
+					</div>
+				)}
+
 			</div>
 
 		</div>
