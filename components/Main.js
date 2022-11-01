@@ -2,8 +2,8 @@ import { RiSettings3Fill } from 'react-icons/ri'
 import { useContext, useState } from 'react'
 import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
-import { ABI, CONTRACT_ADDRESS } from './constants'
-import { ContractPromise } from '@polkadot/api-contract'
+import { ABI, CONTRACT_ADDRESS } from '../lib/constants'
+import { CodePromise, ContractPromise } from '@polkadot/api-contract'
 
 const style = {
 	wrapper: `h-screen w-screen flex items-center justify-center mt-14`,
@@ -13,25 +13,25 @@ const style = {
 	transferPropInput: `bg-transparent placeholder:text-[#B2B9D2] outline-none mb-6 w-full text-2xl`,
 }
 const Main = () => {
-
-	const { connectWallet, currentAccount, api } = useContext(ConnectContext)
+	const { currentAccount, api } = useContext(ConnectContext)
 	const [Name, setName] = useState();
 	const [Image, setImage] = useState();
 	const [Description, setDescription] = useState();
-	const gasLimit = -1;
-	const account = currentAccount
-
+	const date = '2022/11/01'
+	const cid = 'wtf'
+	const gasLimit = 18750000000;
 	const setupContract = async () => {
 		try {
 			await api.isReady
+			//const code = new CodePromise(api, ABI, wasm);
 			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
-			const injector = await web3FromSource(account.meta.source);
+			const injector = await web3FromSource(currentAccount.meta.source);
 			console.log(psp34.tx)
-			const mintExtrinsic = await psp34.tx.mintToken({ gasLimit });
+			const mintExtrinsic = await psp34.tx.mintWithAttribute({ gasLimit }, Name, currentAccount, date, cid);
 			console.log(mintExtrinsic)
 
-			mintExtrinsic.signAndSend(account.address, { signer: injector.signer }, ({ status }) => {
+			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
 					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
 				} else {
