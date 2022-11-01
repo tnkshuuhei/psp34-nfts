@@ -17,7 +17,6 @@ const style = {
 const Main = () => {
 	const { currentAccount, api } = useContext(ConnectContext)
 	const [activeTab, setActiveTab] = useState('collection');
-	console.log(activeTab);
 	const [Name, setName] = useState();
 	const [Image, setImage] = useState();
 	const [Description, setDescription] = useState();
@@ -85,7 +84,7 @@ const Main = () => {
 				</div>
 			</div>
 
-		</div >
+		</div>
 	)
 }
 export default Main
