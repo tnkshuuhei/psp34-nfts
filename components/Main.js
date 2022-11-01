@@ -3,6 +3,7 @@ import { useContext, useState } from 'react'
 import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
 import { ABI, CONTRACT_ADDRESS } from '../lib/constants'
+//import {wasm} from '../lib/psp34_contract.wasm'
 import { CodePromise, ContractPromise } from '@polkadot/api-contract'
 
 const style = {
@@ -15,26 +16,32 @@ const style = {
 	activetab: `bg-[#191B1F]`,
 }
 const Main = () => {
+	const gasLimit = 18750000000;
+	const storageDepositLimit = null
+	const day = new Date();
+	const today = day
+		.toISOString()
+		.replace('T', '-')
+		.slice(0, -8);
+
 	const { currentAccount, api } = useContext(ConnectContext);
 	const [activeTab, setActiveTab] = useState('collection');
-	const [Name, setName] = useState();
-	const [Image, setImage] = useState();
-	const [Description, setDescription] = useState();
-	const [collectionName, setCollectionName] = useState();
-	const [symbol, setSymbol] = useState()
-	const date = '2022/11/01'
-	const cid = 'wtf'
-	const gasLimit = 18750000000;
+
+	const [Image, setImage] = useState();//todo. not contained in argumenets of mintwithattribute
+	const [Name, setName] = useState();//todo
+	const [cid, setCid] = useState(); //todo
+	const date = today
+
+	const [collectionName, setCollectionName] = useState();//todo
+	const [symbol, setSymbol] = useState()//todo
+
 	const setupContract = async () => {
 		try {
 			await api.isReady
-			const code = new CodePromise(api, ABI, wasm);
 			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
-			console.log(psp34.tx)
 			const mintExtrinsic = await psp34.tx.mintWithAttribute({ gasLimit }, Name, currentAccount, date, cid);
-			console.log(mintExtrinsic)
 
 			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
@@ -47,25 +54,28 @@ const Main = () => {
 			console.log(':( transaction failed', error);
 		}
 	}
-	const Create = async () => {
-		try {
-			await api.isReady
-			const code = new CodePromise(api, ABI, wasm);
+	//todo
+	{/**
+  const CreateCollection = async () => {
+    try {
+      await api.isReady
+      const { web3FromSource } = await import("@polkadot/extension-dapp");
+      const injector = await web3FromSource(currentAccount.meta.source);
+      const code = new CodePromise(api, ABI, wasm);
+      const initValue = 1;
+      const createcollection = code.tx.new({ gasLimit, storageDepositLimit }, initValue)
 
-			const { web3FromSource } = await import("@polkadot/extension-dapp");
-			const injector = await web3FromSource(currentAccount.meta.source);
-
-			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
-				if (status.isInBlock) {
-					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
-				} else {
-					console.log(`Current status: ${status.type}`);
-				}
-			})
-		} catch (error) {
-			console.log(':( transaction failed', error);
-		}
-	}
+      createcollection.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
+        if (status.isInBlock) {
+          console.log(`Completed at block hash #${status.asInBlock.toString()}`);
+        } else {
+          console.log(`Current status: ${status.type}`);
+        }
+      })
+    } catch (error) {
+      console.log(':( transaction failed', error);
+    }
+  } */}
 	return (
 		<div className={style.wrapper}>
 			<div className={style.content}>
@@ -96,7 +106,7 @@ const Main = () => {
 								onChange={e => setSymbol(e.target.value)}
 							/>
 						</div>
-						<div onClick={() => setupContract()}>
+						<div onClick={() => CreateCollection()}>
 							<Button title='Create' />
 						</div>
 					</div>
@@ -110,6 +120,7 @@ const Main = () => {
 								onChange={e => setImage(e.target.value)}
 							/>
 						</div>
+						Name
 						<div className={style.transferPropContainer}>
 							<input
 								type='text'
@@ -118,22 +129,21 @@ const Main = () => {
 								onChange={e => setName(e.target.value)}
 							/>
 						</div>
+						Contents ID
 						<div className={style.transferPropContainer}>
 							<input
 								type='text'
 								className={style.transferPropInput}
-								placeholder='Description'
-								onChange={e => setDescription(e.target.value)}
+								placeholder='Contents ID'
+								onChange={e => setCid(e.target.value)}
 							/>
 						</div>
-						<div onClick={() => Create()}>
+						<div onClick={() => setupContract()}>
 							<Button title='Mint' />
 						</div>
 					</div>
 				)}
-
 			</div>
-
 		</div>
 	)
 }
