@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import Image from "next/image"
 import { AiOutlineDown } from 'react-icons/ai'
 import Shiden from '../assets/Shiden.png'
 import { ConnectContext } from '../context/ConnectProvider'
-//import { Identicon } from '@polkadot/react-identicon'
+import dynamic from 'next/dynamic'
 
 const style = {
 	title: 'text-4xl text-white-700 text-center font-semibold',
@@ -16,6 +16,7 @@ const style = {
 }
 function Header() {
 	const { connectWallet, currentAccount, api } = useContext(ConnectContext)
+	const Identicon = dynamic(() => import('@polkadot/react-identicon'), { ssr: false });
 	return (
 
 		<div className={style.headwrapper}>
@@ -25,24 +26,24 @@ function Header() {
 					<div className={style.buttonIconContainer}>
 						<Image src={Shiden} alt='shiden' height={20} width={20} />
 					</div>
-					<p>Shiden</p>
+					<p>Shibuya</p>
 					<div className={style.buttonIconContainer}>
 						<AiOutlineDown />
 					</div>
 				</div>
 				{currentAccount ? (
 					<div className={`${style.button} ${style.buttonPadding}`}>
-						{/**
+
 						<div className={style.buttonIconContainer}>
 							<Identicon
 								value={currentAccount.address}
 								size={20}
 								theme={'polkadot'}
 							/>
-							 
+
 						</div>
-						*/}
-						<div className={style.buttonTextContainer}>{currentAccount.address}</div>
+
+						<div className={style.buttonTextContainer}>{currentAccount.meta.name}</div>
 					</div>
 				) : (
 					<div
