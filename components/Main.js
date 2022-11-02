@@ -28,13 +28,15 @@ const style = {
 
 const Main = () => {
 	const gasLimit = 18750000000;
-	const storageDepositLimit = null
+	//const storageDepositLimit = null
 	const day = new Date();
 	const today = day
 		.toISOString()
 		.replace('T', '-')
 		.slice(0, -8);
 
+	const [imageview, setImageView] = useState('')
+	const [metadataURL, setMetaDataURL] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const [blockhash, setBlockHash] = useState('');
 	const router = useRouter()
@@ -62,7 +64,6 @@ const Main = () => {
 	}, [isLoading])
 
 	const fileUpload = () => {
-		console.log(inputRef.current);
 		inputRef.current.click();
 	};
 	const { currentAccount, api } = useContext(ConnectContext);
@@ -70,10 +71,8 @@ const Main = () => {
 	const inputRef = useRef(null);
 
 	const [base64, setBase64] = useState(null);
-	const [image, setImage] = useState();//todo
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
-	const [file, setFile] = useState(''); //todo
 	const [blob, setBlob] = useState(null);
 	const [fileName, setFileName] = useState(null);
 	const [type, setType] = useState(null);
@@ -122,11 +121,27 @@ const Main = () => {
 	const setupContract = async () => {
 		try {
 			setIsLoading(true)
+
 			//////////////////////////////////
 			const metadata = await store(name, description, data, fileName, type);
 			const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
+			const getIPFSGatewayURL = (ipfsURL) => {
+				let urlArray = ipfsURL.split("/");
+				let ipfsGateWayURL = `https://${urlArray[2]}.ipfs.dweb.link/${urlArray[3]}`;
+				return ipfsGateWayURL;
+			}
+			const previewNFT = (metadata) => {
+				let imgViewString = getIPFSGatewayURL(metadata.data.image.pathname);;
+				setImageView(imgViewString);
+				console.log(imageview);
+				setMetaDataURL(getIPFSGatewayURL(metadata.url));
+			}
+			previewNFT(metadata);
+			const getipfs = await getIPFSGatewayURL(metadata.url);
+			console.log('getipfsgateway', getipfs);
 			console.log("Metadata stored on Filecoin and IPFS with URL:", metadata.url)
 			//////////////////////////////////
+
 			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
@@ -252,13 +267,6 @@ const Main = () => {
 						<div onClick={() => setupContract()}>
 							<Button title='Mint' />
 						</div>
-						{/**
-						{blockhash ? (
-							<div>
-								{blockhash}
-							</div>
-						) : ('')}
-						 */}
 					</div>
 				)}
 			</div>
