@@ -1,6 +1,5 @@
 import { ApiPromise, WsProvider } from '@polkadot/api'
 import React, { useState, useEffect } from 'react'
-
 export const ConnectContext = React.createContext()
 
 const WS_PROVIDER = 'wss://shibuya.public.blastapi.io'
@@ -8,9 +7,11 @@ const DAPP_NAME = 'Mint Shiden NFTs'
 export const ConnectProvider = ({ children }) => {
 	const [currentAccount, setCurrentAccount] = useState()
 	const [api, setapi] = useState()
+
 	useEffect(() => {
 		checkIfWalletIsConnected()
 	}, [])
+
 	const connectWallet = async () => {
 		try {
 			const { web3Enable, web3Accounts } = await import("@polkadot/extension-dapp");

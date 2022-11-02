@@ -1,12 +1,17 @@
 import { RiSettings3Fill } from 'react-icons/ri'
-import { useContext, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
 import { ABI, CONTRACT_ADDRESS } from '../lib/constants'
 import { CodePromise, ContractPromise } from '@polkadot/api-contract'
 import { NFTStorage, File } from 'nft.storage'
 import Image from 'next/image'
-const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGJDMjA0MGM3NEM3MGNlRTYyMTMyNDk4Qjg1ZkEwYzQyMDM3MjM4RTciLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2NzI5OTQ2MjIxOCwibmFtZSI6IlBTUDM0In0.8tpKbH8eNXdUUST5h0OTOvn-EKeiPhLeZSCLPR6uOk4'
+import Modal from 'react-modal'
+import { useRouter } from 'next/router'
+import { NFT_STORAGE_KEY } from '../APIKey'
+import LoadingTransaction from './LoadingTransaction'
+
+Modal.setAppElement('#__next')
 
 const style = {
 	wrapper: `h-screen w-screen flex items-center justify-center mt-14`,
@@ -19,6 +24,7 @@ const style = {
 	Image: `block m-auto shadow`,
 	upload: `block m-auto mt-5 shadow px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-400 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150`,
 }
+
 const Main = () => {
 	const gasLimit = 18750000000;
 	const storageDepositLimit = null
@@ -27,6 +33,32 @@ const Main = () => {
 		.toISOString()
 		.replace('T', '-')
 		.slice(0, -8);
+
+	const [isLoading, setIsLoading] = useState(false)
+	const [blockhash, setBlockHash] = useState('');
+	const router = useRouter()
+	const customStyles = {
+		content: {
+			top: '50%',
+			left: '50%',
+			right: 'auto',
+			bottom: 'auto',
+			transform: 'translate(-50%, -50%)',
+			backgroundColor: '#0a0b0d',
+			padding: 0,
+			border: 'none',
+		},
+		overlay: {
+			backgroundColor: 'rgba(10, 11, 13, 0.75)',
+		},
+	}
+	useEffect(() => {
+		if (isLoading) {
+			router.push(`/?loading=${currentAccount}`)
+		} else {
+			router.push(`/`)
+		}
+	}, [isLoading])
 
 	const fileUpload = () => {
 		console.log(inputRef.current);
@@ -45,7 +77,6 @@ const Main = () => {
 	const [fileName, setFileName] = useState(null);
 	const [type, setType] = useState(null);
 	const date = today
-
 	const [collectionName, setCollectionName] = useState();//todo
 	const [symbol, setSymbol] = useState()//todo
 
@@ -68,6 +99,7 @@ const Main = () => {
 			setBlob(reader.result);
 		};
 	};
+
 	const readAsBase64 = (file) => {
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
@@ -89,8 +121,10 @@ const Main = () => {
 		});
 		return metadata;
 	};
+
 	const setupContract = async () => {
 		try {
+			setIsLoading(true)
 			//////////////////////////////////
 			const metadata = await store(name, description, blob, fileName, type);
 			const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
@@ -102,12 +136,15 @@ const Main = () => {
 			const mintExtrinsic = await psp34.tx.mintWithAttribute({ gasLimit }, name, currentAccount, date, inputUrl);
 			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
-					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
+					setBlockHash(`Completed at block hash #${status.asInBlock.toString()}`)
+					console.log(`Completed at block hash #${status.asInBlock.toString()}`)
+					setIsLoading(false)
 				} else {
-					console.log(`Current status: ${status.type}`);
+					console.log(status.type)
 				}
-			})
+			})//Todo if canceled, setisLoading(false)
 		} catch (error) {
+			setIsLoading(false)
 			console.log(':( transaction failed', error);
 		}
 	}
@@ -217,10 +254,21 @@ const Main = () => {
 						<div onClick={() => setupContract()}>
 							<Button title='Mint' />
 						</div>
+						{/**
+						{blockhash ? (
+							<div>
+								{blockhash}
+							</div>
+						) : ('')}
+						 */}
 					</div>
 				)}
 			</div>
+			<Modal isOpen={!!router.query.loading} style={customStyles}>
+				<LoadingTransaction />
+			</Modal>
 		</div>
+
 	)
 }
 export default Main
