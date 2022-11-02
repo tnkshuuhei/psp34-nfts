@@ -1,7 +1,6 @@
 # PSP34-Minting-site
 ## Usage 
-Please check if you have installed Extension.
-
+Please make sure you have installed Extension.
 
 ## You Can :
 - Use Polkadot{js} Extension, Talisman and Subwallet
