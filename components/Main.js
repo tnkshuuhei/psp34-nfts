@@ -10,6 +10,7 @@ import Modal from 'react-modal'
 import { useRouter } from 'next/router'
 import { NFT_STORAGE_KEY } from '../APIKey'
 import LoadingTransaction from './LoadingTransaction'
+import { data } from 'autoprefixer'
 
 Modal.setAppElement('#__next')
 
@@ -70,9 +71,9 @@ const Main = () => {
 
 	const [base64, setBase64] = useState(null);
 	const [image, setImage] = useState();//todo
-	const [name, setName] = useState('');//todo
+	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
-	const [cid, setCid] = useState(''); //todo
+	const [file, setFile] = useState(''); //todo
 	const [blob, setBlob] = useState(null);
 	const [fileName, setFileName] = useState(null);
 	const [type, setType] = useState(null);
@@ -82,7 +83,6 @@ const Main = () => {
 
 	const select = (e) => {
 		const file = e.target.files[0];
-		console.log(file);
 		if (file) {
 			readAsBlob(file);
 			readAsBase64(file);
@@ -95,7 +95,6 @@ const Main = () => {
 		const reader = new FileReader();
 		reader.readAsArrayBuffer(file);
 		reader.onload = () => {
-			console.log(reader.result);
 			setBlob(reader.result);
 		};
 	};
@@ -104,16 +103,14 @@ const Main = () => {
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
 		reader.onload = () => {
-			console.log(reader.result);
 			setBase64(reader.result);
 		};
 	};
 
-	const nftStorage = new NFTStorage({
-		token: NFT_STORAGE_KEY,
-	});
+
 
 	const store = async (name, description, data, fileName, type) => {
+		const nftStorage = new NFTStorage({ token: NFT_STORAGE_KEY, });
 		const metadata = await nftStorage.store({
 			name,
 			description,
@@ -126,8 +123,9 @@ const Main = () => {
 		try {
 			setIsLoading(true)
 			//////////////////////////////////
-			const metadata = await store(name, description, blob, fileName, type);
+			const metadata = await store(name, description, data, fileName, type);
 			const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
+			console.log("Metadata stored on Filecoin and IPFS with URL:", metadata.url)
 			//////////////////////////////////
 			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
