@@ -1,5 +1,5 @@
 import { RiSettings3Fill } from 'react-icons/ri'
-import { useContext, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
 import { ABI, CONTRACT_ADDRESS } from '../lib/constants'
@@ -16,7 +16,8 @@ const style = {
 	transferPropInput: `bg-transparent placeholder:text-[#B2B9D2] outline-none mb-6 w-full text-2xl`,
 	inactivetab: ` text-gray-600 inline-block p-4 rounded-t-lg hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300`,
 	activetab: `bg-[#191B1F]`,
-	Image: `flex items-center justify-center`,
+	Image: `block m-auto shadow`,
+	upload: `block m-auto mt-5 shadow px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-400 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150`,
 }
 const Main = () => {
 	const gasLimit = 18750000000;
@@ -27,8 +28,13 @@ const Main = () => {
 		.replace('T', '-')
 		.slice(0, -8);
 
+	const fileUpload = () => {
+		console.log(inputRef.current);
+		inputRef.current.click();
+	};
 	const { currentAccount, api } = useContext(ConnectContext);
 	const [activeTab, setActiveTab] = useState('collection');
+	const inputRef = useRef(null);
 
 	const [base64, setBase64] = useState(null);
 	const [image, setImage] = useState();//todo
@@ -46,7 +52,6 @@ const Main = () => {
 	const select = (e) => {
 		const file = e.target.files[0];
 		console.log(file);
-
 		if (file) {
 			readAsBlob(file);
 			readAsBase64(file);
@@ -93,8 +98,8 @@ const Main = () => {
 			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
+			console.log(inputUrl);
 			const mintExtrinsic = await psp34.tx.mintWithAttribute({ gasLimit }, name, currentAccount, date, inputUrl);
-
 			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
 					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
@@ -166,25 +171,30 @@ const Main = () => {
 					<div>
 						<div>
 							Upload Image
-							<input
-								type='file'
-								accept='image/*'
-								className={style.transferPropInput}
-								placeholder='Upload Image File for NFT'
-								onChange={select}
-							/>
-							{base64 ? (
-								<Image
-									src={base64}
-									alt="hoge"
-									className={style.Image}
-									width={250}
-									height={250}
+							<div>
+								<input
+									hidden
+									ref={inputRef}
+									type='file'
+									accept='image/*'
+									placeholder='Upload Image File for NFT'
+									onChange={select}
 								/>
-							) : (
-								<></>
-							)}
-
+								{base64 ? (
+									<Image
+										src={base64}
+										alt="hoge"
+										className={style.Image}
+										width={250}
+										height={250}
+									/>
+								) : (
+									<></>
+								)}
+								<button onClick={fileUpload} className={style.upload}>
+									Select New Photo
+								</button>
+							</div>
 						</div>
 						Name
 						<div className={style.transferPropContainer}>
