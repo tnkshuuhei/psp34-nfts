@@ -8,7 +8,6 @@ import { NFTStorage, File } from 'nft.storage'
 import Image from 'next/image'
 import Modal from 'react-modal'
 import { useRouter } from 'next/router'
-import { NFT_STORAGE_KEY } from '../APIKey'
 import LoadingTransaction from './LoadingTransaction'
 import { data } from 'autoprefixer'
 
@@ -35,11 +34,6 @@ const Main = () => {
 		.replace('T', '-')
 		.slice(0, -8);
 
-	const [imageview, setImageView] = useState('')
-	const [metadataURL, setMetaDataURL] = useState('')
-	const [isLoading, setIsLoading] = useState(false)
-	const [blockhash, setBlockHash] = useState('');
-	const router = useRouter()
 	const customStyles = {
 		content: {
 			top: '50%',
@@ -55,21 +49,16 @@ const Main = () => {
 			backgroundColor: 'rgba(10, 11, 13, 0.75)',
 		},
 	}
-	useEffect(() => {
-		if (isLoading) {
-			router.push(`/?loading=${currentAccount}`)
-		} else {
-			router.push(`/`)
-		}
-	}, [isLoading])
 
-	const fileUpload = () => {
-		inputRef.current.click();
-	};
+	const [imageview, setImageView] = useState('')
+	const [metadataURL, setMetaDataURL] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
+	const [blockhash, setBlockHash] = useState('');
+	const [apikey, setAPIKEY] = useState();
+	const router = useRouter()
 	const { currentAccount, api } = useContext(ConnectContext);
 	const [activeTab, setActiveTab] = useState('collection');
 	const inputRef = useRef(null);
-
 	const [base64, setBase64] = useState(null);
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
@@ -79,6 +68,23 @@ const Main = () => {
 	const date = today
 	const [collectionName, setCollectionName] = useState();//todo
 	const [symbol, setSymbol] = useState()//todo
+
+	useEffect(() => {
+		if (isLoading) {
+			router.push(`/?loading=${currentAccount}`)
+		} else {
+			router.push(`/`)
+		}
+	}, [isLoading])
+
+	useEffect(() => {
+		setAPIKEY(process.env.NEXT_PUBLIC_STORAGE_KEY);
+		//set API key into .env file. read it when browser is loaded.
+	}, [])
+
+	const fileUpload = () => {
+		inputRef.current.click();
+	};
 
 	const select = (e) => {
 		const file = e.target.files[0];
@@ -106,10 +112,8 @@ const Main = () => {
 		};
 	};
 
-
-
 	const store = async (name, description, data, fileName, type) => {
-		const nftStorage = new NFTStorage({ token: NFT_STORAGE_KEY, });
+		const nftStorage = new NFTStorage({ token: apikey, });
 		const metadata = await nftStorage.store({
 			name,
 			description,
@@ -121,7 +125,6 @@ const Main = () => {
 	const setupContract = async () => {
 		try {
 			setIsLoading(true)
-
 			//////////////////////////////////
 			const metadata = await store(name, description, data, fileName, type);
 			const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
