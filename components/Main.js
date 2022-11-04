@@ -2,8 +2,8 @@ import { RiSettings3Fill } from 'react-icons/ri'
 import { useContext, useEffect, useRef, useState } from 'react'
 import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
-import { ABI, CONTRACT_ADDRESS } from '../contract/constants'
-import { contractWASM } from '../contract/contractWASM'
+import { ABI, CONTRACT_ADDRESS } from '../artifacts/constants'
+import { contractWASM } from '../artifacts/contractWASM'
 import { CodePromise, ContractPromise } from '@polkadot/api-contract'
 import { NFTStorage, File } from 'nft.storage'
 import Image from 'next/image'
@@ -13,8 +13,7 @@ import LoadingTransaction from './LoadingTransaction'
 import { data } from 'autoprefixer'
 
 Modal.setAppElement('#__next')
-const wasm = contractWASM.source.wasm;
-console.log(wasm);
+
 const style = {
 	wrapper: `h-screen w-screen flex items-center justify-center mt-14`,
 	content: `bg-[#191B1F] w-[40rem] rounded-2xl p-4`,
@@ -28,8 +27,6 @@ const style = {
 }
 
 const Main = () => {
-	const gasLimit = 18750000000;
-	//const storageDepositLimit = null
 	const day = new Date();
 	const today = day
 		.toISOString()
@@ -166,15 +163,18 @@ const Main = () => {
 	}
 	//todo
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	const CreateCollection = async () => {
+	const gasLimit = 18750000000;
+	const storageDepositLimit = null
+	const wasm = contractWASM.source.wasm;
+	//console.log(wasm);
+
+	const CreateCollection = async (collectionName, symbol) => {
 		try {
-			await api.isReady
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
 			const code = new CodePromise(api, ABI, wasm);
-			const initValue = 1;
-			const createcollection = code.tx.new({ gasLimit, storageDepositLimit }, initValue)
-
+			const Id = 1;
+			const createcollection = code.tx.new({ gasLimit, storageDepositLimit }, Id, collectionName, symbol)
 			createcollection.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
 					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
@@ -187,6 +187,7 @@ const Main = () => {
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	return (
 		<div className={style.wrapper}>
 			<div className={style.content}>
