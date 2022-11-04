@@ -1,6 +1,7 @@
 import { RiSettings3Fill } from 'react-icons/ri'
 import { useContext, useEffect, useRef, useState } from 'react'
 import Button from './Button'
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ConnectContext } from '../context/ConnectProvider'
 import { ABI, CONTRACT_ADDRESS } from '../artifacts/constants'
 import { contractWASM } from '../artifacts/contractWASM'
@@ -11,7 +12,7 @@ import Modal from 'react-modal'
 import { useRouter } from 'next/router'
 import LoadingTransaction from './modal/LoadingTransaction'
 import { data } from 'autoprefixer'
-
+import { IoMdCopy } from 'react-icons/io'
 Modal.setAppElement('#__next')
 
 const style = {
@@ -23,6 +24,7 @@ const style = {
 	inactivetab: ` text-gray-600 inline-block p-4 rounded-t-lg hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300`,
 	activetab: `bg-[#191B1F]`,
 	Image: `block m-auto shadow`,
+	copyarea: `flex cursor-pointer`,
 	upload: `block m-auto mt-5 shadow px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-400 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150`,
 }
 
@@ -48,7 +50,6 @@ const Main = () => {
 			backgroundColor: 'rgba(10, 11, 13, 0.75)',
 		},
 	}
-
 	const [imageview, setImageView] = useState('')
 	const [metadataURL, setMetaDataURL] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
@@ -61,12 +62,14 @@ const Main = () => {
 	const [base64, setBase64] = useState(null)
 	const [name, setName] = useState('')
 	const [description, setDescription] = useState('')
+	const [deployedaddress, setDeployedAddress] = useState(CONTRACT_ADDRESS)
 	const [blob, setBlob] = useState(null)
 	const [fileName, setFileName] = useState(null)
 	const [type, setType] = useState(null)
 	const date = today
 	const [collectionName, setCollectionName] = useState()
 	const [symbol, setSymbol] = useState()
+	const [text, setText] = useState('')
 
 	useEffect(() => {
 		if (isLoading) {
@@ -142,7 +145,7 @@ const Main = () => {
 			console.log('getipfsgateway', getipfs);
 			console.log("Metadata stored on Filecoin and IPFS with URL:", metadata.url)
 
-			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
+			const psp34 = new ContractPromise(api, ABI, deployedaddress);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
 			console.log(inputUrl);
@@ -182,6 +185,7 @@ const Main = () => {
 					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
 					console.log(`Contract is deployed: #${address}`);
 					setIsLoading(false)
+					setText(address);
 				} else {
 					console.log(`Current status: ${status.type}`);
 				}
@@ -274,11 +278,35 @@ const Main = () => {
 								onChange={e => setDescription(e.target.value)}
 							/>
 						</div>
+						Contract address
+						<div className={style.transferPropContainer}>
+							<input
+								type='text'
+								className={style.transferPropInput}
+								placeholder='Set Deployed Address'
+								onChange={e => setDeployedAddress(e.target.value)}
+							/>
+						</div>
 						<div onClick={() => setupContract()}>
 							<Button title='Mint' />
 						</div>
 					</div>
 				)}
+				{text ? (
+					<div>
+						<div className={style.copyarea}>
+							Deployed :{text}
+							<CopyToClipboard
+								text={text}
+								onCopy={() => alert(`Copied :${text}`)}
+							>
+								<IoMdCopy
+									size={25}
+								/>
+							</CopyToClipboard>
+						</div>
+					</div>
+				) : ('')}
 			</div>
 			<Modal isOpen={!!router.query.loading} style={customStyles}>
 				<LoadingTransaction />
