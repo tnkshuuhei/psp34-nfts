@@ -2,7 +2,8 @@ import { RiSettings3Fill } from 'react-icons/ri'
 import { useContext, useEffect, useRef, useState } from 'react'
 import Button from './Button'
 import { ConnectContext } from '../context/ConnectProvider'
-import { ABI, CONTRACT_ADDRESS } from '../lib/constants'
+import { ABI, CONTRACT_ADDRESS } from '../contract/constants'
+import { contractWASM } from '../contract/contractWASM'
 import { CodePromise, ContractPromise } from '@polkadot/api-contract'
 import { NFTStorage, File } from 'nft.storage'
 import Image from 'next/image'
@@ -12,7 +13,8 @@ import LoadingTransaction from './LoadingTransaction'
 import { data } from 'autoprefixer'
 
 Modal.setAppElement('#__next')
-
+const wasm = contractWASM.source.wasm;
+console.log(wasm);
 const style = {
 	wrapper: `h-screen w-screen flex items-center justify-center mt-14`,
 	content: `bg-[#191B1F] w-[40rem] rounded-2xl p-4`,
@@ -125,7 +127,6 @@ const Main = () => {
 	const setupContract = async () => {
 		try {
 			setIsLoading(true)
-			//////////////////////////////////
 			const metadata = await store(name, description, data, fileName, type);
 			const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
 			const getIPFSGatewayURL = (ipfsURL) => {
@@ -143,14 +144,13 @@ const Main = () => {
 			const getipfs = await getIPFSGatewayURL(metadata.url);
 			console.log('getipfsgateway', getipfs);
 			console.log("Metadata stored on Filecoin and IPFS with URL:", metadata.url)
-			//////////////////////////////////
 
 			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
 			console.log(inputUrl);
-			const mintExtrinsic = await psp34.tx.mintWithAttribute({ gasLimit }, name, currentAccount, date, inputUrl);
-			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
+			const mintFunction = await psp34.tx.mintWithAttribute({ gasLimit }, name, currentAccount, date, inputUrl);
+			mintFunction.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
 					setBlockHash(`Completed at block hash #${status.asInBlock.toString()}`)
 					console.log(`Completed at block hash #${status.asInBlock.toString()}`)
@@ -165,27 +165,28 @@ const Main = () => {
 		}
 	}
 	//todo
-	{/**
-  const CreateCollection = async () => {
-    try {
-      await api.isReady
-      const { web3FromSource } = await import("@polkadot/extension-dapp");
-      const injector = await web3FromSource(currentAccount.meta.source);
-      const code = new CodePromise(api, ABI, wasm);
-      const initValue = 1;
-      const createcollection = code.tx.new({ gasLimit, storageDepositLimit }, initValue)
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const CreateCollection = async () => {
+		try {
+			await api.isReady
+			const { web3FromSource } = await import("@polkadot/extension-dapp");
+			const injector = await web3FromSource(currentAccount.meta.source);
+			const code = new CodePromise(api, ABI, wasm);
+			const initValue = 1;
+			const createcollection = code.tx.new({ gasLimit, storageDepositLimit }, initValue)
 
-      createcollection.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
-        if (status.isInBlock) {
-          console.log(`Completed at block hash #${status.asInBlock.toString()}`);
-        } else {
-          console.log(`Current status: ${status.type}`);
-        }
-      })
-    } catch (error) {
-      console.log(':( transaction failed', error);
-    }
-  } */}
+			createcollection.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
+				if (status.isInBlock) {
+					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
+				} else {
+					console.log(`Current status: ${status.type}`);
+				}
+			})
+		} catch (error) {
+			console.log(':( transaction failed', error);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	return (
 		<div className={style.wrapper}>
 			<div className={style.content}>
