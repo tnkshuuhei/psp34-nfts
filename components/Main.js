@@ -176,9 +176,11 @@ const Main = () => {
 			const code = new CodePromise(api, ABI, wasm);
 			const Id = 1; //todo
 			const createcollection = code.tx.new({ gasLimit, storageDepositLimit }, Id, collectionName, symbol)
-			createcollection.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
+			createcollection.signAndSend(currentAccount.address, { signer: injector.signer }, ({ contract, status }) => {
 				if (status.isInBlock) {
+					let address = contract.address.toString();
 					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
+					console.log(`Contract is deployed: #${address}`);
 					setIsLoading(false)
 				} else {
 					console.log(`Current status: ${status.type}`);
