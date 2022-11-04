@@ -146,6 +146,7 @@ const Main = () => {
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
 			console.log(inputUrl);
+
 			const mintFunction = await psp34.tx.mintWithAttribute({ gasLimit }, name, currentAccount, date, inputUrl);
 			mintFunction.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
@@ -166,23 +167,25 @@ const Main = () => {
 	const gasLimit = 18750000000;
 	const storageDepositLimit = null
 	const wasm = contractWASM.source.wasm;
-	//console.log(wasm);
 
 	const CreateCollection = async (collectionName, symbol) => {
 		try {
+			setIsLoading(true)
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
 			const code = new CodePromise(api, ABI, wasm);
-			const Id = 1;
+			const Id = 1; //todo
 			const createcollection = code.tx.new({ gasLimit, storageDepositLimit }, Id, collectionName, symbol)
 			createcollection.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
 					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
+					setIsLoading(false)
 				} else {
 					console.log(`Current status: ${status.type}`);
 				}
-			})
+			})//Todo if canceled, setisLoading(false)
 		} catch (error) {
+			setIsLoading(false)
 			console.log(':( transaction failed', error);
 		}
 	}
@@ -279,7 +282,6 @@ const Main = () => {
 				<LoadingTransaction />
 			</Modal>
 		</div>
-
 	)
 }
 export default Main
