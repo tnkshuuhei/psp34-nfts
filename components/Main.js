@@ -1,16 +1,18 @@
 import { RiSettings3Fill } from 'react-icons/ri'
 import { useContext, useEffect, useRef, useState } from 'react'
 import Button from './Button'
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ConnectContext } from '../context/ConnectProvider'
-import { ABI, CONTRACT_ADDRESS } from '../lib/constants'
+import { ABI, CONTRACT_ADDRESS } from '../artifacts/constants'
+import { contractWASM } from '../artifacts/contractWASM'
 import { CodePromise, ContractPromise } from '@polkadot/api-contract'
 import { NFTStorage, File } from 'nft.storage'
 import Image from 'next/image'
 import Modal from 'react-modal'
 import { useRouter } from 'next/router'
-import LoadingTransaction from './LoadingTransaction'
+import LoadingTransaction from './modal/LoadingTransaction'
 import { data } from 'autoprefixer'
-
+import { IoMdCopy } from 'react-icons/io'
 Modal.setAppElement('#__next')
 
 const style = {
@@ -22,12 +24,11 @@ const style = {
 	inactivetab: ` text-gray-600 inline-block p-4 rounded-t-lg hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300`,
 	activetab: `bg-[#191B1F]`,
 	Image: `block m-auto shadow`,
+	copyarea: `flex cursor-pointer`,
 	upload: `block m-auto mt-5 shadow px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-400 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150`,
 }
 
 const Main = () => {
-	const gasLimit = 18750000000;
-	//const storageDepositLimit = null
 	const day = new Date();
 	const today = day
 		.toISOString()
@@ -49,25 +50,26 @@ const Main = () => {
 			backgroundColor: 'rgba(10, 11, 13, 0.75)',
 		},
 	}
-
 	const [imageview, setImageView] = useState('')
 	const [metadataURL, setMetaDataURL] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
-	const [blockhash, setBlockHash] = useState('');
-	const [apikey, setAPIKEY] = useState();
+	const [blockhash, setBlockHash] = useState('')
+	const [apikey, setAPIKEY] = useState()
 	const router = useRouter()
-	const { currentAccount, api } = useContext(ConnectContext);
-	const [activeTab, setActiveTab] = useState('collection');
-	const inputRef = useRef(null);
-	const [base64, setBase64] = useState(null);
-	const [name, setName] = useState('');
-	const [description, setDescription] = useState('');
-	const [blob, setBlob] = useState(null);
-	const [fileName, setFileName] = useState(null);
-	const [type, setType] = useState(null);
+	const { currentAccount, api } = useContext(ConnectContext)
+	const [activeTab, setActiveTab] = useState('collection')
+	const inputRef = useRef(null)
+	const [base64, setBase64] = useState(null)
+	const [name, setName] = useState('')
+	const [description, setDescription] = useState('')
+	const [deployedaddress, setDeployedAddress] = useState(CONTRACT_ADDRESS)
+	const [blob, setBlob] = useState(null)
+	const [fileName, setFileName] = useState(null)
+	const [type, setType] = useState(null)
 	const date = today
-	const [collectionName, setCollectionName] = useState();//todo
-	const [symbol, setSymbol] = useState()//todo
+	const [collectionName, setCollectionName] = useState()
+	const [symbol, setSymbol] = useState()
+	const [text, setText] = useState('')
 
 	useEffect(() => {
 		if (isLoading) {
@@ -125,7 +127,6 @@ const Main = () => {
 	const setupContract = async () => {
 		try {
 			setIsLoading(true)
-			//////////////////////////////////
 			const metadata = await store(name, description, data, fileName, type);
 			const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
 			const getIPFSGatewayURL = (ipfsURL) => {
@@ -143,14 +144,14 @@ const Main = () => {
 			const getipfs = await getIPFSGatewayURL(metadata.url);
 			console.log('getipfsgateway', getipfs);
 			console.log("Metadata stored on Filecoin and IPFS with URL:", metadata.url)
-			//////////////////////////////////
 
-			const psp34 = new ContractPromise(api, ABI, CONTRACT_ADDRESS);
+			const psp34 = new ContractPromise(api, ABI, deployedaddress);
 			const { web3FromSource } = await import("@polkadot/extension-dapp");
 			const injector = await web3FromSource(currentAccount.meta.source);
 			console.log(inputUrl);
-			const mintExtrinsic = await psp34.tx.mintWithAttribute({ gasLimit }, name, currentAccount, date, inputUrl);
-			mintExtrinsic.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
+
+			const mintFunction = await psp34.tx.mintWithAttribute({ gasLimit }, name, currentAccount, date, inputUrl);
+			mintFunction.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
 				if (status.isInBlock) {
 					setBlockHash(`Completed at block hash #${status.asInBlock.toString()}`)
 					console.log(`Completed at block hash #${status.asInBlock.toString()}`)
@@ -165,27 +166,37 @@ const Main = () => {
 		}
 	}
 	//todo
-	{/**
-  const CreateCollection = async () => {
-    try {
-      await api.isReady
-      const { web3FromSource } = await import("@polkadot/extension-dapp");
-      const injector = await web3FromSource(currentAccount.meta.source);
-      const code = new CodePromise(api, ABI, wasm);
-      const initValue = 1;
-      const createcollection = code.tx.new({ gasLimit, storageDepositLimit }, initValue)
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const gasLimit = 18750000000;
+	const storageDepositLimit = null
+	const wasm = contractWASM.source.wasm;
 
-      createcollection.signAndSend(currentAccount.address, { signer: injector.signer }, ({ status }) => {
-        if (status.isInBlock) {
-          console.log(`Completed at block hash #${status.asInBlock.toString()}`);
-        } else {
-          console.log(`Current status: ${status.type}`);
-        }
-      })
-    } catch (error) {
-      console.log(':( transaction failed', error);
-    }
-  } */}
+	const CreateCollection = async (collectionName, symbol) => {
+		try {
+			setIsLoading(true)
+			const { web3FromSource } = await import("@polkadot/extension-dapp");
+			const injector = await web3FromSource(currentAccount.meta.source);
+			const code = new CodePromise(api, ABI, wasm);
+			const Id = 1; //todo
+			const createcollection = code.tx.new({ gasLimit, storageDepositLimit }, Id, collectionName, symbol)
+			createcollection.signAndSend(currentAccount.address, { signer: injector.signer }, ({ contract, status }) => {
+				if (status.isInBlock) {
+					let address = contract.address.toString();
+					console.log(`Completed at block hash #${status.asInBlock.toString()}`);
+					console.log(`Contract is deployed: #${address}`);
+					setIsLoading(false)
+					setText(address);
+				} else {
+					console.log(`Current status: ${status.type}`);
+				}
+			})//Todo if canceled, setisLoading(false)
+		} catch (error) {
+			setIsLoading(false)
+			console.log(':( transaction failed', error);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	return (
 		<div className={style.wrapper}>
 			<div className={style.content}>
@@ -198,22 +209,22 @@ const Main = () => {
 				</div>
 				{activeTab === 'collection' ? (
 					<div>
-						Collection Name
-						<div className={style.transferPropContainer}>
-							<input
-								type='text'
-								className={style.transferPropInput}
-								placeholder='e.g. Bored Ape Yacht Club'
-								onChange={e => setCollectionName(e.target.value)}
-							/>
-						</div>
 						Symbol
 						<div className={style.transferPropContainer}>
 							<input
 								type='text'
 								className={style.transferPropInput}
-								placeholder='e.g. BAYC'
+								placeholder='BAYC'
 								onChange={e => setSymbol(e.target.value)}
+							/>
+						</div>
+						Collection Name
+						<div className={style.transferPropContainer}>
+							<input
+								type='text'
+								className={style.transferPropInput}
+								placeholder='Bored Ape Yacht Club'
+								onChange={e => setCollectionName(e.target.value)}
 							/>
 						</div>
 						<div onClick={() => CreateCollection()}>
@@ -267,17 +278,40 @@ const Main = () => {
 								onChange={e => setDescription(e.target.value)}
 							/>
 						</div>
+						Contract address
+						<div className={style.transferPropContainer}>
+							<input
+								type='text'
+								className={style.transferPropInput}
+								placeholder='Set Deployed Address'
+								onChange={e => setDeployedAddress(e.target.value)}
+							/>
+						</div>
 						<div onClick={() => setupContract()}>
 							<Button title='Mint' />
 						</div>
 					</div>
 				)}
+				{text ? (
+					<div>
+						<div className={style.copyarea}>
+							Deployed :{text}
+							<CopyToClipboard
+								text={text}
+								onCopy={() => alert(`Copied :${text}`)}
+							>
+								<IoMdCopy
+									size={25}
+								/>
+							</CopyToClipboard>
+						</div>
+					</div>
+				) : ('')}
 			</div>
 			<Modal isOpen={!!router.query.loading} style={customStyles}>
 				<LoadingTransaction />
 			</Modal>
 		</div>
-
 	)
 }
 export default Main

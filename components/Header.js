@@ -13,6 +13,7 @@ const style = {
 	button: `flex items-center bg-[#191B1F] rounded-2xl mx-2 text-[0.9rem] font-semibold cursor-pointer`,
 	buttonPadding: `p-2`,
 	buttonIconContainer: `flex items-center justify-center w-8 h-8`,
+	network: `mr-2`
 }
 function Header() {
 	const { connectWallet, currentAccount, api } = useContext(ConnectContext)
@@ -26,10 +27,7 @@ function Header() {
 					<div className={style.buttonIconContainer}>
 						<Image src={Shiden} alt='shiden' height={20} width={20} />
 					</div>
-					<p>Shibuya</p>
-					<div className={style.buttonIconContainer}>
-						<AiOutlineDown />
-					</div>
+					<p className={style.network}>Shibuya</p>
 				</div>
 				{currentAccount ? (
 					<div className={`${style.button} ${style.buttonPadding}`}>
