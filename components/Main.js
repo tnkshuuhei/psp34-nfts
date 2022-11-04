@@ -28,6 +28,9 @@ const style = {
 	upload: `block m-auto mt-5 shadow px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-400 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150`,
 }
 
+//need to delete
+const STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGJDMjA0MGM3NEM3MGNlRTYyMTMyNDk4Qjg1ZkEwYzQyMDM3MjM4RTciLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2NzI5OTQ2MjIxOCwibmFtZSI6IlBTUDM0In0.8tpKbH8eNXdUUST5h0OTOvn-EKeiPhLeZSCLPR6uOk4'
+
 const Main = () => {
 	const day = new Date();
 	const today = day
@@ -79,11 +82,12 @@ const Main = () => {
 		}
 	}, [isLoading])
 
+	{/**
 	useEffect(() => {
 		setAPIKEY(process.env.NEXT_PUBLIC_STORAGE_KEY);
 		//set API key into .env file. read it when browser is loaded.
 	}, [])
-
+ */}
 	const fileUpload = () => {
 		inputRef.current.click();
 	};
@@ -115,7 +119,7 @@ const Main = () => {
 	};
 
 	const store = async (name, description, data, fileName, type) => {
-		const nftStorage = new NFTStorage({ token: apikey, });
+		const nftStorage = new NFTStorage({ token: STORAGE_KEY, });
 		const metadata = await nftStorage.store({
 			name,
 			description,
