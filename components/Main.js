@@ -9,7 +9,7 @@ import { NFTStorage, File } from 'nft.storage'
 import Image from 'next/image'
 import Modal from 'react-modal'
 import { useRouter } from 'next/router'
-import LoadingTransaction from './LoadingTransaction'
+import LoadingTransaction from './modal/LoadingTransaction'
 import { data } from 'autoprefixer'
 
 Modal.setAppElement('#__next')
@@ -52,21 +52,21 @@ const Main = () => {
 	const [imageview, setImageView] = useState('')
 	const [metadataURL, setMetaDataURL] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
-	const [blockhash, setBlockHash] = useState('');
-	const [apikey, setAPIKEY] = useState();
+	const [blockhash, setBlockHash] = useState('')
+	const [apikey, setAPIKEY] = useState()
 	const router = useRouter()
-	const { currentAccount, api } = useContext(ConnectContext);
-	const [activeTab, setActiveTab] = useState('collection');
-	const inputRef = useRef(null);
-	const [base64, setBase64] = useState(null);
-	const [name, setName] = useState('');
-	const [description, setDescription] = useState('');
-	const [blob, setBlob] = useState(null);
-	const [fileName, setFileName] = useState(null);
-	const [type, setType] = useState(null);
+	const { currentAccount, api } = useContext(ConnectContext)
+	const [activeTab, setActiveTab] = useState('collection')
+	const inputRef = useRef(null)
+	const [base64, setBase64] = useState(null)
+	const [name, setName] = useState('')
+	const [description, setDescription] = useState('')
+	const [blob, setBlob] = useState(null)
+	const [fileName, setFileName] = useState(null)
+	const [type, setType] = useState(null)
 	const date = today
-	const [collectionName, setCollectionName] = useState();//todo
-	const [symbol, setSymbol] = useState()//todo
+	const [collectionName, setCollectionName] = useState()
+	const [symbol, setSymbol] = useState()
 
 	useEffect(() => {
 		if (isLoading) {
@@ -205,22 +205,22 @@ const Main = () => {
 				</div>
 				{activeTab === 'collection' ? (
 					<div>
-						Collection Name
-						<div className={style.transferPropContainer}>
-							<input
-								type='text'
-								className={style.transferPropInput}
-								placeholder='e.g. Bored Ape Yacht Club'
-								onChange={e => setCollectionName(e.target.value)}
-							/>
-						</div>
 						Symbol
 						<div className={style.transferPropContainer}>
 							<input
 								type='text'
 								className={style.transferPropInput}
-								placeholder='e.g. BAYC'
+								placeholder='BAYC'
 								onChange={e => setSymbol(e.target.value)}
+							/>
+						</div>
+						Collection Name
+						<div className={style.transferPropContainer}>
+							<input
+								type='text'
+								className={style.transferPropInput}
+								placeholder='Bored Ape Yacht Club'
+								onChange={e => setCollectionName(e.target.value)}
 							/>
 						</div>
 						<div onClick={() => CreateCollection()}>
